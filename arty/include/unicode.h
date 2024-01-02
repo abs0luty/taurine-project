@@ -3,7 +3,6 @@
 
 #include "macros.h"
 #include <stdbool.h>
-#include <wchar.h>
 
 #ifdef __cplusplus
 extern "C" {
