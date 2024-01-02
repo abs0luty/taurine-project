@@ -38,4 +38,11 @@ TEST(arty_tests, arty_encode_codepoint_in_utf8_to_null_terminated_string) {
   CHECK_STREQ(dst, "П");
 }
 
+TEST(arty_tests, arty_encode_codepoint_in_utf8) {
+  char dst[2];
+  arty_codepoint_t codepoint = 0x041F;
+  arty_encode_codepoint_in_utf8(codepoint, dst);
+  CHECK_STREQ(dst, "П");
+}
+
 TAU_MAIN()
