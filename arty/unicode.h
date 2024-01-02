@@ -3,7 +3,19 @@
 
 #include <stdbool.h>
 
-typedef unsigned int arty_codepoint_t;
+/**
+ * @brief  Invalid Unicode codepoint (means that the codepoint couldn't be decoded).
+ */
+#define INVALID_CODEPOINT -1
+
+/**
+ * The Unicode codepoint type.
+ */
+typedef int arty_codepoint_t;
+
+/**
+ * The type to denote the size of the codepoint in UTF8 bytes.
+ */
 typedef unsigned long long arty_codepoint_size_t;
 
 /**

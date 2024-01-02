@@ -1,11 +1,14 @@
 #include "utf8.h"
-#include <cstdint>
 
 #define NULLPTR ((void *)0)
 
 arty_codepoint_size_t arty_utf8_bytes_in_codepoint(arty_codepoint_t codepoint)
 {
-    if (codepoint < 0x80)
+    if (codepoint < 0x00)
+    {
+        return 0;
+    }
+    else if (codepoint < 0x80)
     {
         return 1;
     } else if (codepoint < 0x800)
@@ -28,13 +31,13 @@ arty_codepoint_size_t arty_utf8_bytes_in_codepoint_by_leading_byte(unsigned char
     if (lead < 0x80)
     {
         return 1;
-    } else if (lead < 0xE0)
+    } else if ((lead & 0xE0) == 0xC0)
     {
         return 2;
-    } else if (lead < 0xF0)
+    } else if ((lead & 0xF0) == 0xE0)
     {
         return 3;
-    } else if (lead < 0xF8)
+    } else if ((lead & 0xF8) == 0xF0)
     {
         return 4;
     } else
@@ -45,6 +48,10 @@ arty_codepoint_size_t arty_utf8_bytes_in_codepoint_by_leading_byte(unsigned char
 
 void arty_encode_codepoint_in_utf8(arty_codepoint_t codepoint, char *dst)
 {
+    if (codepoint < 0x00) {
+        return;
+    }
+
     if (codepoint < 0x80)
     {
         dst[0] = codepoint;
@@ -77,24 +84,30 @@ void arty_encode_codepoint_in_utf8_to_null_terminated_string(arty_codepoint_t co
 
 arty_codepoint_t arty_decode_codepoint_from_utf8(const char *src)
 {
-    unsigned char lead = src[0];
-    if (lead < 0x80) {
-        return (arty_codepoint_t) lead;
-    }
-
-    arty_codepoint_size_t size = arty_utf8_bytes_in_codepoint_by_leading_byte(lead);
-    if (size < 2) {
+    if (src == NULLPTR || *src == '\0') {
         return 0;
     }
 
-    arty_codepoint_t codepoint = lead & ((1 << (6 - size)) - 1);
+    // The leading byte.
+    unsigned char lead = *src;
 
+    // The number of bytes in the codepoint.
+    arty_codepoint_size_t size = arty_utf8_bytes_in_codepoint_by_leading_byte(lead);
+
+    if (size == 0) {
+        return INVALID_CODEPOINT;
+    }
+
+    // The codepoint.
+    arty_codepoint_t codepoint = lead & (0xFF >> size);
+
+    // Extract continuation bytes and form the codepoint.
     for (arty_codepoint_size_t i = 1; i < size; i++) {
-        if ((src[i] & 0xc0) != 0x80) {
-            return 0;
+        if ((src[i] & 0xC0) != 0x80) {
+            return INVALID_CODEPOINT;
         }
 
-        codepoint = (codepoint << 6) | (src[i] & 0x3f);
+        codepoint = (codepoint << 6) | (src[i] & 0x3F);
     }
 
     return codepoint;

@@ -1,11 +1,6 @@
 #include "unicode.h"
 
 /**
- * @brief  The replacement character (U+FFFD).
- */
-#define REPLACEMENT_CHARACTER 0xFFFD
-
-/**
  * @brief  Returns the size of the given codepoint in UTF8 bytes.
  * @param  codepoint The codepoint to get the size of.
  * @return The size of the codepoint in bytes if codepoint is valid
@@ -16,7 +11,8 @@ arty_codepoint_size_t arty_utf8_bytes_in_codepoint(arty_codepoint_t codepoint);
 /**
  * @brief  Returns the size of the given codepoint in UTF8 bytes.
  * @param  lead The leading byte of the codepoint in UTF8.
- * @return The potential size of the codepoint in bytes.
+ * @return The potential size of the codepoint in bytes
+ *         if codepoint is valid and `0` otherwise.
  */
 arty_codepoint_size_t arty_utf8_bytes_in_codepoint_by_leading_byte(unsigned char lead);
 
