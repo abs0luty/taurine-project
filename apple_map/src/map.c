@@ -1,9 +1,9 @@
-#include "apple_map.h"
+#include "map.h"
 
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct bucket_t bucket;
+typedef struct bucket bucket_t;
 
 struct apple_map
 {
