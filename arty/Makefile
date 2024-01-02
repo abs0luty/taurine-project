@@ -1,23 +1,34 @@
-sources = $(wildcard src/*.c)
-objects = $(sources:.c=.o)
-flags = -g
-cc = gcc
+.DEFAULT_GOAL := test
 
-%.o: %.c include/%.h
-	$(cc) -c $(flags) $< -o $@
+# List of C files in the src/ directory.
+SRCS = $(wildcard src/*.c)
+# List of object files associated with source files in the src/ directory.
+OBJS = $(SRCS:.c=.o)
+# Flags to pass to the compiler for building each object file.
+FLAGS = -g
+# C compiler
+CC = gcc
+# Include directories
+INC = -Iinclude -I../tau
 
-tests.o: tests.c
-	$(cc) -c $(flags) tests.c -o tests.o -w
+# Build each object file for each file in the src/ directory.
+$(OBJS): src/%.o: src/%.c include/%.h
+	$(CC) -c $(FLAGS) $(INC) $< -o $@
 
-tests.out: $(objects) tests.o
-	$(cc) $(objects) tests.o $(flags) -o tests.out
+# Build tests object file
+tests/tests.o: tests/tests.c
+	$(CC) -c $(FLAGS) $(INC) tests/tests.c -o tests/tests.o -w
 
-test: tests.out
-	./tests.out
+# Build tests executable
+tests/tests.out: $(OBJS) tests/tests.o
+	$(CC) $(OBJS) tests/tests.o $(FLAGS) -o tests/tests.out
 
+# Run tests
+test: tests/tests.out
+	./tests/tests.out
+
+# Clean up all object and executable files
 clean:
-	rm $(objects)
-	rm tests.o
-	rm tests
-
-.PHONY: test
+	rm $(OBJS)
+	rm tests/tests.o
+	rm tests/tests.out

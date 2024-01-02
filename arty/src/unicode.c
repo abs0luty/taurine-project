@@ -1,4 +1,4 @@
-#include "../include/unicode.h"
+#include "unicode.h"
 
 bool arty_is_valid_unicode_codepoint(arty_codepoint_t codepoint)
 {

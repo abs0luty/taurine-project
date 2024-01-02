@@ -1,6 +1,6 @@
-#include "include/utf8.h"
-#include "include/unicode.h"
-#include "../tau/tau.h"
+#include "utf8.h"
+#include "unicode.h"
+#include "tau.h"
 
 TEST(arty_tests, arty_utf8_bytes_in_codepoint)
 {
