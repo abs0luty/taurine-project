@@ -1,7 +1,12 @@
 #ifndef _ARTY_UNICODE_H_
 #define _ARTY_UNICODE_H_
 
+#include "macros.h"
 #include <stdbool.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @brief  Invalid Unicode codepoint (means that the codepoint couldn't be decoded).
@@ -23,5 +28,9 @@ typedef unsigned long long arty_codepoint_size_t;
  * @return `true` if the codepoint is valid, `false` otherwise.
  */
 bool arty_is_valid_unicode_codepoint(arty_codepoint_t codepoint);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _ARTY_UNICODE_H_ */
