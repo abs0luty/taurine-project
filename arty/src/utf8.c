@@ -1,5 +1,28 @@
 #include "utf8.h"
 
+arty_utf8_string_iterator_t arty_new_utf8_string_iterator(const char * src,
+  unsigned long long string_size)
+{
+  arty_utf8_string_iterator_t it;
+  it.src = src;
+  it.byte_offset = 0;
+  it.string_size = string_size;
+  return it;
+}
+
+arty_codepoint_t arty_advance_utf8_string_iterator(arty_utf8_string_iterator_t *it)
+{
+  if (it->byte_offset >= it->string_size)
+  {
+    return NO_CODEPOINT;
+  }
+
+  arty_codepoint_t codepoint = arty_decode_codepoint_from_utf8(it->src + it->byte_offset);
+  it->byte_offset += arty_utf8_bytes_in_codepoint(codepoint);
+
+  return codepoint;
+}
+
 arty_codepoint_size_t arty_utf8_bytes_in_codepoint(arty_codepoint_t codepoint)
 {
     if (codepoint < 0x00)

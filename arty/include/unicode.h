@@ -14,6 +14,14 @@ extern "C" {
 #define INVALID_CODEPOINT -1
 
 /**
+ * @brief  No Unicode codepoint (means that there is no more codepoints to be decoded in the UTF8
+ * string iterator).
+ *
+ * @see   arty_utf8_string_iterator_t
+ */
+#define NO_CODEPOINT -2
+
+/**
  * The Unicode codepoint type.
  */
 typedef int arty_codepoint_t;

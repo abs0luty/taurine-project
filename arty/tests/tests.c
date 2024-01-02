@@ -35,7 +35,7 @@ TEST(arty_tests, arty_encode_codepoint_in_utf8_to_null_terminated_string) {
   char dst[3];
   arty_codepoint_t codepoint = 0x041F;
   arty_encode_codepoint_in_utf8_to_null_terminated_string(codepoint, dst);
-  CHECK_STREQ(dst, "П");
+  CHECK_STREQ(dst, "П\0");
 }
 
 TEST(arty_tests, arty_encode_codepoint_in_utf8) {
@@ -43,6 +43,25 @@ TEST(arty_tests, arty_encode_codepoint_in_utf8) {
   arty_codepoint_t codepoint = 0x041F;
   arty_encode_codepoint_in_utf8(codepoint, dst);
   CHECK_STREQ(dst, "П");
+}
+
+TEST(arty_tests, arty_new_utf8_string_iterator) {
+  arty_utf8_string_iterator_t it = arty_new_utf8_string_iterator("Пq\0", 4);
+  arty_codepoint_t codepoint = arty_advance_utf8_string_iterator(&it);
+
+  CHECK_EQ(codepoint, 0x041F);
+
+  codepoint = arty_advance_utf8_string_iterator(&it);
+  CHECK_EQ(codepoint, 0x0071);
+
+  codepoint = arty_advance_utf8_string_iterator(&it);
+  CHECK_EQ(codepoint, 0x00);
+
+  codepoint = arty_advance_utf8_string_iterator(&it);
+  CHECK_EQ(codepoint, NO_CODEPOINT);
+
+  codepoint = arty_advance_utf8_string_iterator(&it);
+  CHECK_EQ(codepoint, NO_CODEPOINT);
 }
 
 TAU_MAIN()

@@ -8,6 +8,28 @@
 extern "C" {
 #endif
 
+typedef struct {
+  const char *src;
+  unsigned long long byte_offset;
+  unsigned long long string_size;
+} arty_utf8_string_iterator_t;
+
+/**
+ * @brief  Creates an iterator for the given UTF8 string.
+ * @param  src The UTF8 string to iterate over.
+ * @return The created iterator.
+ */
+arty_utf8_string_iterator_t arty_new_utf8_string_iterator(
+  const char *src,
+  unsigned long long string_size);
+
+/**
+ * @brief  Advances the iterator and returns the next codepoint.
+ * @param  it The iterator to advance.
+ * @return The next codepoint.
+ */
+arty_codepoint_t arty_advance_utf8_string_iterator(arty_utf8_string_iterator_t *it);
+
 /**
  * @brief  Returns the size of the given codepoint in UTF8 bytes.
  * @param  codepoint The codepoint to get the size of.
