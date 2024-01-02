@@ -1,4 +1,4 @@
-#include "utf8.h"
+#include "../include/utf8.h"
 
 arty_codepoint_size_t arty_utf8_bytes_in_codepoint(arty_codepoint_t codepoint)
 {

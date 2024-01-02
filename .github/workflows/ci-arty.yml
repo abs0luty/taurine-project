@@ -1,0 +1,22 @@
+name: 🔍 CI - Arty
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "arty/**"
+  push:
+    branches:
+      - main
+    paths:
+      - "arty/**"
+  workflow_dispatch:
+jobs:
+  test:
+    name: 🧪 Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Checkout
+        uses: actions/checkout@v3
+      - name: 🧪 Test
+        run: make test
