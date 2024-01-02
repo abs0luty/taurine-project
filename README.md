@@ -5,4 +5,4 @@ Garden of language implementations written in C for FreeKMS OS. Languages curren
 - [ ] Lua
 - [ ] Python
 
-It also includes a variety of useful C libraries like [arty](./arty), [eboueur](./eboueur), etc. for language development.
+It also includes a variety of useful C libraries like [arty](./arty), [eboueur](./eboueur), [apple map](./apple_map) etc. for language development.
