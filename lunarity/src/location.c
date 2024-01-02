@@ -1,9 +1,9 @@
 #include "../include/location.h"
 
 lunarity_byte_location_t lunarity_new_byte_location(
-  unsigned int line,
-  unsigned int column,
-  unsigned int offset)
+    unsigned int line,
+    unsigned int column,
+    unsigned int offset)
 {
   lunarity_byte_location_t location;
   location.line = line;
@@ -13,8 +13,8 @@ lunarity_byte_location_t lunarity_new_byte_location(
 }
 
 lunarity_span_t lunarity_new_span(
-  lunarity_byte_location_t start,
-  lunarity_byte_location_t end)
+    lunarity_byte_location_t start,
+    lunarity_byte_location_t end)
 {
   lunarity_span_t span;
   span.start = start;

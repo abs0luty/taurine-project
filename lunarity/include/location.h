@@ -15,13 +15,14 @@ typedef struct
  * @param   offset the byte offset
  * @return  A new location with the given line, column, and offset.
  * @version 0.1.0
-*/
+ */
 lunarity_byte_location_t lunarity_new_byte_location(
     unsigned int line,
     unsigned int column,
     unsigned int offset);
 
-typedef struct {
+typedef struct
+{
   lunarity_byte_location_t start, end;
 } lunarity_span_t;
 
