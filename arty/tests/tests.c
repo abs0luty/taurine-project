@@ -64,4 +64,28 @@ TEST(arty_tests, arty_new_utf8_string_iterator) {
   CHECK_EQ(codepoint, NO_CODEPOINT);
 }
 
+TEST(arty_tests, arty_is_xid_continue) {
+  CHECK(arty_is_xid_continue('a'));
+  CHECK(arty_is_xid_continue('A'));
+  CHECK(arty_is_xid_continue('0'));
+  CHECK(arty_is_xid_continue('_'));
+  CHECK(!arty_is_xid_continue('!'));
+  CHECK(!arty_is_xid_continue(' '));
+
+  CHECK(!arty_is_xid_continue(0x110000));
+  CHECK(arty_is_xid_continue(0x041F));
+}
+
+TEST(arty_tests, arty_is_xid_start) {
+  CHECK(arty_is_xid_start('a'));
+  CHECK(arty_is_xid_start('A'));
+  CHECK(!arty_is_xid_start('0'));
+  CHECK(!arty_is_xid_start('_'));
+  CHECK(!arty_is_xid_start('!'));
+  CHECK(!arty_is_xid_start(' '));
+
+  CHECK(!arty_is_xid_start(0x110000));
+  CHECK(arty_is_xid_start(0x041F));
+}
+
 TAU_MAIN()

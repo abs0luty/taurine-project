@@ -3,6 +3,7 @@
 
 #include "macros.h"
 #include <stdbool.h>
+#include <wchar.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,6 +37,18 @@ typedef unsigned long long arty_codepoint_size_t;
  * @return `true` if the codepoint is valid, `false` otherwise.
  */
 bool arty_is_valid_unicode_codepoint(arty_codepoint_t codepoint);
+
+/**
+ * @param  codepoint The codepoint to check.
+ * @return `true` if the codepoint is in the XID_Start range, `false` otherwise.
+ */
+bool arty_is_xid_start(arty_codepoint_t codepoint);
+
+/**
+ * @param  codepoint The codepoint to check.
+ * @return `true` if the codepoint is in the XID_Continue range, `false` otherwise.
+ */
+bool arty_is_xid_continue(arty_codepoint_t codepoint);
 
 #ifdef __cplusplus
 }
