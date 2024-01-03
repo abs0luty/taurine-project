@@ -6,7 +6,7 @@ static void lunarity_lexer_state_skip_whitespaces(lunarity_lexer_state_t *state)
 static bool lunarity_is_whitespace(arty_codepoint_t codepoint);
 static lunarity_token_t lunarity_next_name_token(lunarity_lexer_state_t *state);
 static bool lunarity_check_for_kw(const char* name, lunarity_span_t span, lunarity_token_t* token);
-static size_t lunarity_binary_search_kw(size_t low, size_t high, const char* name);
+static size_t lunarity_binary_search_kw(const char* name);
 
 lunarity_lexer_state_t lunarity_new_lexer_state(arty_utf8_string_iterator_t it)
 {
@@ -23,8 +23,6 @@ static void lunarity_advance_lexer_state(lunarity_lexer_state_t *state)
   if (state->current == NO_CODEPOINT) {
     return;
   }
-
-  size_t relative_offset;
 
   state->cursor.offset += arty_utf8_bytes_in_codepoint(state->current);
   if (state->current == '\n') {
