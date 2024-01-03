@@ -3,6 +3,8 @@
 
 #include "macros.h"
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -27,13 +29,13 @@ extern "C"
  * @brief   The Unicode codepoint type.
  * @version 0.1.0
  */
-typedef int arty_codepoint_t;
+typedef int32_t arty_codepoint_t;
 
 /**
  * @brief   The type to denote the size of the codepoint in UTF8 bytes.
  * @version 0.1.0
  */
-typedef unsigned long long arty_codepoint_size_t;
+typedef size_t arty_codepoint_size_t;
 
 /**
  * @param   codepoint The codepoint to check.

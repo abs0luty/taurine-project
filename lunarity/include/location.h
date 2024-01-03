@@ -1,12 +1,13 @@
-#include <cstddef>
 #ifndef _LUNARITY_LOCATION_H_
 #define _LUNARITY_LOCATION_H_
 
+#include <stddef.h>
+
 typedef struct
 {
-  unsigned int line;
-  unsigned int column;
-  unsigned int offset;
+  size_t line;
+  size_t column;
+  size_t offset;
 } lunarity_byte_location_t;
 
 /**
@@ -17,9 +18,9 @@ typedef struct
  * @version 0.1.0
  */
 lunarity_byte_location_t lunarity_new_byte_location(
-    unsigned int line,
-    unsigned int column,
-    unsigned int offset);
+    size_t line,
+    size_t column,
+    size_t offset);
 
 typedef struct
 {
@@ -37,10 +38,19 @@ lunarity_span_t lunarity_new_span(
     lunarity_byte_location_t end);
 
 /**
+ * Create a new span with a single byte
+ * @param   byte_location the location of a single byte
+ * @return  A new span containing the single byte
+ * @version 0.1.0
+ */
+lunarity_span_t lunarity_new_single_byte_span(
+    lunarity_byte_location_t byte_location);
+
+/**
  * @param   span the span
  * @return  The size of the span in bytes.
  * @version 0.1.0
  */
-unsigned int lunarity_span_size(lunarity_span_t span);
+size_t lunarity_span_size(lunarity_span_t span);
 
 #endif /* _LUNARITY_LOCATION_H_ */

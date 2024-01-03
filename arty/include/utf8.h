@@ -4,6 +4,8 @@
 #include "macros.h"
 #include "unicode.h"
 
+#include <stddef.h>
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -12,8 +14,8 @@ extern "C"
 typedef struct
 {
   const char *src;
-  unsigned long long byte_offset;
-  unsigned long long string_size;
+  size_t byte_offset;
+  size_t string_size;
 } arty_utf8_string_iterator_t;
 
 /**
@@ -24,7 +26,7 @@ typedef struct
  */
 arty_utf8_string_iterator_t arty_new_utf8_string_iterator(
     const char *src,
-    unsigned long long string_size);
+    size_t string_size);
 
 /**
  * @brief   Advances the iterator and returns the next codepoint.

@@ -1,7 +1,7 @@
 #include "utf8.h"
 
 arty_utf8_string_iterator_t arty_new_utf8_string_iterator(const char *src,
-                                                          unsigned long long string_size)
+                                                          size_t string_size)
 {
     arty_utf8_string_iterator_t it;
     it.src = src;
