@@ -1,4 +1,4 @@
-#include "utf8.h"
+#include "arty/include/utf8.h"
 
 arty_utf8_string_iterator_t arty_new_utf8_string_iterator(const char *src,
                                                           size_t string_size)

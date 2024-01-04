@@ -5,13 +5,19 @@ on:
       - main
     paths:
       - "arty/**"
-      - ".github/workflows/ci-arty.yml"
+      - "tau/**"
+      - "lunarity/**"
+      - "apple_map/**"
+      - ".github/workflows/ci.yml"
   push:
     branches:
       - main
     paths:
       - "arty/**"
-      - ".github/workflows/ci-arty.yml"
+      - "tau/**"
+      - "lunarity/**"
+      - "apple_map/**"
+      - ".github/workflows/ci.yml"
   workflow_dispatch:
 jobs:
   test:
@@ -21,5 +27,8 @@ jobs:
       - name: 🚚 Checkout
         uses: actions/checkout@v3
 
+      - name: 🧪 Build
+        run: mkdir build; cd build; cmake ..; make
+
       - name: 🧪 Test
-        run: cd arty && make test
+        run: ctest --output-on-failure

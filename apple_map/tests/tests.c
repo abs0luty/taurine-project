@@ -1,5 +1,5 @@
-#include "map.h"
-#include "tau.h"
+#include "apple_map/include/apple_map.h"
+#include "tau/tau.h"
 
 TEST(apple_map_tests, apple_map_insert_and_get) {
   apple_map_t *map = apple_map_new();
@@ -65,7 +65,7 @@ TEST(apple_map_tests, apple_map_free) {
   apple_map_t *map = apple_map_new();
   char* value = (char *)malloc(4);
   strcpy(value, "foo\0");
-  apple_map_insert(map, "foo", 3, value);
+  apple_map_insert(map, "foo", 3, (uintptr_t) value);
 
   char* extracted_value;
   CHECK(apple_map_get(map, "foo", 3, (uintptr_t *)&extracted_value));

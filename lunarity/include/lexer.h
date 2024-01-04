@@ -1,8 +1,8 @@
 #ifndef _LUNARITY_LEXER_H_
 #define _LUNARITY_LEXER_H_
 
-#include "unicode.h"
-#include "utf8.h"
+#include "arty/include/unicode.h"
+#include "arty/include/utf8.h"
 #include "location.h"
 #include "token.h"
 

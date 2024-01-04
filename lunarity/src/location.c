@@ -1,4 +1,4 @@
-#include "location.h"
+#include "lunarity/include/location.h"
 
 lunarity_byte_location_t lunarity_new_byte_location(
     size_t line,
