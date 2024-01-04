@@ -7,19 +7,19 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 /**
- * @brief   Invalid Unicode codepoint (means that the codepoint couldn't be decoded).
+ * @brief   Invalid Unicode codepoint (means that the codepoint couldn't be
+ * decoded).
  * @version 0.1.0
  */
 #define INVALID_CODEPOINT -1
 
 /**
- * @brief   No Unicode codepoint (means that there is no more codepoints to be decoded in the UTF8
- * string iterator).
+ * @brief   No Unicode codepoint (means that there is no more codepoints to be
+ * decoded in the UTF8 string iterator).
  * @version 0.1.0
  * @see     arty_utf8_string_iterator_t
  */
@@ -46,14 +46,16 @@ bool arty_is_valid_unicode_codepoint(arty_codepoint_t codepoint);
 
 /**
  * @param   codepoint The codepoint to check.
- * @return  `true` if the codepoint is in the XID_Start range, `false` otherwise.
+ * @return  `true` if the codepoint is in the XID_Start range, `false`
+ * otherwise.
  * @version 0.1.0
  */
 bool arty_is_xid_start(arty_codepoint_t codepoint);
 
 /**
  * @param   codepoint The codepoint to check.
- * @return  `true` if the codepoint is in the XID_Continue range, `false` otherwise.
+ * @return  `true` if the codepoint is in the XID_Continue range, `false`
+ * otherwise.
  * @version 0.1.0
  */
 bool arty_is_xid_continue(arty_codepoint_t codepoint);

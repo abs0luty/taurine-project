@@ -7,12 +7,10 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-typedef struct
-{
+typedef struct {
   const char *src;
   size_t byte_offset;
   size_t string_size;
@@ -24,9 +22,8 @@ typedef struct
  * @return  The created iterator.
  * @version 0.1.0
  */
-arty_utf8_string_iterator_t arty_new_utf8_string_iterator(
-    const char *src,
-    size_t string_size);
+arty_utf8_string_iterator_t arty_new_utf8_string_iterator(const char *src,
+                                                          size_t string_size);
 
 /**
  * @brief   Advances the iterator and returns the next codepoint.
@@ -34,7 +31,8 @@ arty_utf8_string_iterator_t arty_new_utf8_string_iterator(
  * @return  The next codepoint.
  * @version 0.1.0
  */
-arty_codepoint_t arty_advance_utf8_string_iterator(arty_utf8_string_iterator_t *it);
+arty_codepoint_t
+arty_advance_utf8_string_iterator(arty_utf8_string_iterator_t *it);
 
 /**
  * @brief   Returns the size of the given codepoint in UTF8 bytes.
@@ -52,16 +50,19 @@ arty_codepoint_size_t arty_utf8_bytes_in_codepoint(arty_codepoint_t codepoint);
  *          if codepoint is valid and `0` otherwise.
  * @version 0.1.0
  */
-arty_codepoint_size_t arty_utf8_bytes_in_codepoint_by_leading_byte(unsigned char lead);
+arty_codepoint_size_t
+arty_utf8_bytes_in_codepoint_by_leading_byte(unsigned char lead);
 
 /**
  * @brief      Encodes the given codepoint in UTF8 bytes.
  *             Buffer isn't touched if the codepoint isn't valid.
  *             Buffer is maximally 4 bytes long and isn't null-terminated.
- *             Size of the buffer can be calculated with #arty_codepoint_size_in_utf8.
+ *             Size of the buffer can be calculated with
+ * #arty_codepoint_size_in_utf8.
  * @param      codepoint The codepoint to encode.
  * @param[out] dst The buffer where the encoded codepoint will be written.
- * @return     `true` if the codepoint was encoded successfully, `false` otherwise.
+ * @return     `true` if the codepoint was encoded successfully, `false`
+ * otherwise.
  * @version    0.1.0
  */
 bool arty_encode_codepoint_in_utf8(arty_codepoint_t codepoint, char *dst);
@@ -70,13 +71,16 @@ bool arty_encode_codepoint_in_utf8(arty_codepoint_t codepoint, char *dst);
  * @brief      Encodes the given codepoint in UTF8 bytes.
  *             Buffer isn't touched if the codepoint isn't valid.
  *             Buffer is maximally 4 bytes long and is null-terminated.
- *             Size of the buffer can be calculated with #arty_codepoint_size_in_utf8.
+ *             Size of the buffer can be calculated with
+ * #arty_codepoint_size_in_utf8.
  * @param      codepoint The codepoint to encode.
  * @param[out] dst The buffer where the encoded codepoint will be written.
- * @return     `true` if the codepoint was encoded successfully, `false` otherwise.
+ * @return     `true` if the codepoint was encoded successfully, `false`
+ * otherwise.
  * @version    0.1.0
  */
-bool arty_encode_codepoint_in_utf8_to_null_terminated_string(arty_codepoint_t codepoint, char *dst);
+bool arty_encode_codepoint_in_utf8_to_null_terminated_string(
+    arty_codepoint_t codepoint, char *dst);
 
 /**
  * @brief      Decodes the given UTF8 bytes into the codepoint.

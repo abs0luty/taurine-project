@@ -27,6 +27,11 @@ jobs:
       - name: 🚚 Checkout
         uses: actions/checkout@v3
 
+      - name: 🔍 Check formatting
+        uses: DoozyX/clang-format-lint-action@v0.13
+        with:
+          source: ./
+
       - name: 🧪 Build
         run: mkdir build; cd build; cmake ..; make
 

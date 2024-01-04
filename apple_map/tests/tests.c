@@ -63,11 +63,11 @@ void free_callback(void *key, size_t key_size, uintptr_t value, void *user) {
 
 TEST(apple_map_tests, apple_map_free) {
   apple_map_t *map = apple_map_new();
-  char* value = (char *)malloc(4);
+  char *value = (char *)malloc(4);
   strcpy(value, "foo\0");
-  apple_map_insert(map, "foo", 3, (uintptr_t) value);
+  apple_map_insert(map, "foo", 3, (uintptr_t)value);
 
-  char* extracted_value;
+  char *extracted_value;
   CHECK(apple_map_get(map, "foo", 3, (uintptr_t *)&extracted_value));
   CHECK_EQ(strcmp(extracted_value, "foo\0"), 0);
 
