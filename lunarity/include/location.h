@@ -38,13 +38,31 @@ lunarity_span_t lunarity_new_span(
     lunarity_byte_location_t end);
 
 /**
- * Create a new span with a single byte
+ * Create a new span containing a single byte
  * @param   byte_location the location of a single byte
  * @return  A new span containing the single byte
  * @version 0.1.0
  */
 lunarity_span_t lunarity_new_single_byte_span(
     lunarity_byte_location_t byte_location);
+
+/**
+ * Create a new span containing two bytes
+ * @param   byte_location the location of two bytes
+ * @return  A new span containing two bytes
+ * @version 0.1.0
+*/
+lunarity_span_t
+lunarity_new_double_byte_span(lunarity_byte_location_t byte_location);
+
+/**
+ * Create a new span containing three bytes
+ * @param   byte_location the location of three bytes
+ * @return  A new span containing three bytes
+ * @version 0.1.0
+ */
+lunarity_span_t
+lunarity_new_triple_byte_span(lunarity_byte_location_t byte_location);
 
 /**
  * @param   span the span

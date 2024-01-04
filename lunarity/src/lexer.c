@@ -5,6 +5,8 @@
 
 static void lunarity_advance_lexer_state(lunarity_lexer_state_t *state);
 
+static void lunarity_advance_lexer_state_twice(lunarity_lexer_state_t *state);
+
 static void lunarity_lexer_state_skip_whitespaces(lunarity_lexer_state_t *state);
 
 static bool lunarity_is_whitespace(arty_codepoint_t codepoint);
@@ -43,6 +45,11 @@ static void lunarity_advance_lexer_state(lunarity_lexer_state_t *state)
 
   state->current = state->next;
   state->next = arty_advance_utf8_string_iterator(&state->it);
+}
+
+static void lunarity_advance_lexer_state_twice(lunarity_lexer_state_t *state) {
+  lunarity_advance_lexer_state(state);
+  lunarity_advance_lexer_state(state);
 }
 
 static void lunarity_lexer_state_skip_whitespaces(lunarity_lexer_state_t *state)
@@ -87,6 +94,20 @@ static lunarity_token_t lunarity_next_name_token(lunarity_lexer_state_t *state)
   }
 }
 
+#define SINGLE_BYTE_PUNCTUATION(_char, _kind)                                  \
+  if (state->current == _char) {                                               \
+    lunarity_span_t span = lunarity_new_single_byte_span(state->cursor);       \
+    lunarity_advance_lexer_state(state);                                       \
+    return lunarity_new_token(_kind, span);                                    \
+  }
+
+#define DOUBLE_BYTE_PUNCTUATION(_char1, _char2, _kind)                         \
+  if (state->current == _char1 && state->next == _char2) {                     \
+    lunarity_span_t span = lunarity_new_double_byte_span(state->cursor);       \
+    lunarity_advance_lexer_state_twice(state);                                 \
+    return lunarity_new_token(_kind, span);                                    \
+  }
+
 lunarity_token_t lunarity_next_token(lunarity_lexer_state_t *state)
 {
   lunarity_token_t token;
@@ -96,6 +117,65 @@ lunarity_token_t lunarity_next_token(lunarity_lexer_state_t *state)
   if (arty_is_xid_start(state->current) || state->current == '_')
   {
     return lunarity_next_name_token(state);
+  }
+
+  SINGLE_BYTE_PUNCTUATION('+', LUNARITY_TOKEN_KIND_PLUS)
+  SINGLE_BYTE_PUNCTUATION('-', LUNARITY_TOKEN_KIND_MINUS)
+  SINGLE_BYTE_PUNCTUATION('*', LUNARITY_TOKEN_KIND_ASTERISK)
+  SINGLE_BYTE_PUNCTUATION('%', LUNARITY_TOKEN_KIND_PERCENT)
+  SINGLE_BYTE_PUNCTUATION('^', LUNARITY_TOKEN_KIND_CARET)
+  SINGLE_BYTE_PUNCTUATION('#', LUNARITY_TOKEN_KIND_HASH)
+  SINGLE_BYTE_PUNCTUATION('(', LUNARITY_TOKEN_KIND_LPAREN)
+  SINGLE_BYTE_PUNCTUATION(')', LUNARITY_TOKEN_KIND_RPAREN)
+  SINGLE_BYTE_PUNCTUATION('{', LUNARITY_TOKEN_KIND_LBRACE)
+  SINGLE_BYTE_PUNCTUATION('}', LUNARITY_TOKEN_KIND_RBRACE)
+  SINGLE_BYTE_PUNCTUATION('[', LUNARITY_TOKEN_KIND_LBRACKET)
+  SINGLE_BYTE_PUNCTUATION(']', LUNARITY_TOKEN_KIND_RBRACKET)
+  SINGLE_BYTE_PUNCTUATION(',', LUNARITY_TOKEN_KIND_COMMA)
+  SINGLE_BYTE_PUNCTUATION(';', LUNARITY_TOKEN_KIND_SEMICOLON)
+  SINGLE_BYTE_PUNCTUATION('&', LUNARITY_TOKEN_KIND_AMPERSAND)
+  SINGLE_BYTE_PUNCTUATION('|', LUNARITY_TOKEN_KIND_BAR)
+
+  DOUBLE_BYTE_PUNCTUATION('>', '>', LUNARITY_TOKEN_KIND_GTGT)
+  DOUBLE_BYTE_PUNCTUATION('>', '=', LUNARITY_TOKEN_KIND_GE)
+  SINGLE_BYTE_PUNCTUATION('>', LUNARITY_TOKEN_KIND_GT)
+
+  DOUBLE_BYTE_PUNCTUATION('<', '<', LUNARITY_TOKEN_KIND_LTLT)
+  DOUBLE_BYTE_PUNCTUATION('<', '=', LUNARITY_TOKEN_KIND_LE)
+  SINGLE_BYTE_PUNCTUATION('<', LUNARITY_TOKEN_KIND_LT)
+
+  DOUBLE_BYTE_PUNCTUATION('/', '/', LUNARITY_TOKEN_KIND_DOUBLE_SLASH)
+  SINGLE_BYTE_PUNCTUATION('/', LUNARITY_TOKEN_KIND_SLASH)
+
+  DOUBLE_BYTE_PUNCTUATION('=', '=', LUNARITY_TOKEN_KIND_DOUBLE_EQ)
+  DOUBLE_BYTE_PUNCTUATION('~', '=', LUNARITY_TOKEN_KIND_TILDE_EQ)
+  SINGLE_BYTE_PUNCTUATION('=', LUNARITY_TOKEN_KIND_EQ)
+  SINGLE_BYTE_PUNCTUATION('~', LUNARITY_TOKEN_KIND_TILDE)
+
+  DOUBLE_BYTE_PUNCTUATION(':', ':', LUNARITY_TOKEN_KIND_DOUBLE_COLON)
+  SINGLE_BYTE_PUNCTUATION(':', LUNARITY_TOKEN_KIND_COLON)
+
+  if (state->current == '.') {
+    if (state->next == '.') {
+      lunarity_byte_location_t start_location = state->cursor;
+      lunarity_advance_lexer_state(state);
+
+      if (state->next == '.') {
+        lunarity_advance_lexer_state_twice(state);
+        return lunarity_new_token(
+            LUNARITY_TOKEN_KIND_TRIPLE_DOT,
+            lunarity_new_triple_byte_span(start_location));
+      }
+
+      lunarity_advance_lexer_state(state);
+      return lunarity_new_token(LUNARITY_TOKEN_KIND_DOUBLE_DOT,
+                                lunarity_new_double_byte_span(start_location));
+    }
+
+    lunarity_byte_location_t start_location = state->cursor;
+    lunarity_advance_lexer_state(state);
+    return lunarity_new_token(LUNARITY_TOKEN_KIND_DOT,
+                              lunarity_new_single_byte_span(start_location));
   }
 
   if (state->current == NO_CODEPOINT)
