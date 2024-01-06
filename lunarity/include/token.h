@@ -69,6 +69,7 @@ typedef enum lunarity_token_kind {
   LUNARITY_TOKEN_KIND_STRING,
 
   LUNARITY_TOKEN_KIND_UNTERMINATED_STRING_LITERAL,
+  LUNARITY_TOKEN_KIND_UNEXPECTED_CHARACTER,
 } lunarity_token_kind_t;
 
 typedef struct lunarity_token {

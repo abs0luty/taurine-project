@@ -98,4 +98,10 @@ TEST(lexer_tests, string) {
   CHECK_NEXT_TOKEN(LUNARITY_TOKEN_KIND_EOF, 1, 6, 6, 1, 7, 7);
 }
 
+TEST(lexer_tests, unexpected_character) {
+  START_LEXER_TEST("`", 1);
+  CHECK_NEXT_TOKEN(LUNARITY_TOKEN_KIND_UNEXPECTED_CHARACTER, 1, 0, 0, 1, 1, 1);
+  CHECK_NEXT_TOKEN(LUNARITY_TOKEN_KIND_EOF, 1, 1, 1, 1, 2, 2);
+}
+
 TAU_MAIN()

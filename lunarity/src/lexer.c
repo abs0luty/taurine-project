@@ -184,16 +184,19 @@ static bool process_escape_sequence(lunarity_lexer_state_t *state,
   }
 
 lunarity_token_t lunarity_next_token(lunarity_lexer_state_t *state) {
-  lunarity_token_t token;
-
   lunarity_lexer_state_skip_whitespaces(state);
 
+  /* Identifier or keyword */
   if (arty_is_xid_start(state->current) || state->current == '_') {
     return lunarity_next_name_token(state);
-  } else if (state->current == '\'' || state->current == '"') {
+  }
+
+  /* String literal */
+  if (state->current == '\'' || state->current == '"') {
     return lunarity_next_string_token(state);
   }
 
+  /* Punctuation */
   SINGLE_BYTE_PUNCTUATION('+', LUNARITY_TOKEN_KIND_PLUS)
   SINGLE_BYTE_PUNCTUATION('-', LUNARITY_TOKEN_KIND_MINUS)
   SINGLE_BYTE_PUNCTUATION('*', LUNARITY_TOKEN_KIND_ASTERISK)
@@ -230,6 +233,7 @@ lunarity_token_t lunarity_next_token(lunarity_lexer_state_t *state) {
   DOUBLE_BYTE_PUNCTUATION(':', ':', LUNARITY_TOKEN_KIND_DOUBLE_COLON)
   SINGLE_BYTE_PUNCTUATION(':', LUNARITY_TOKEN_KIND_COLON)
 
+  /* Punctuation: `.`, `..` or `...` */
   if (state->current == '.') {
     if (state->next == '.') {
       lunarity_byte_location_t start_location = state->cursor;
@@ -253,12 +257,17 @@ lunarity_token_t lunarity_next_token(lunarity_lexer_state_t *state) {
                               lunarity_new_single_byte_span(start_location));
   }
 
+  /* End of file */
   if (state->current == NO_CODEPOINT) {
     return lunarity_new_token(LUNARITY_TOKEN_KIND_EOF,
                               lunarity_new_single_byte_span(state->cursor));
   }
 
-  return token;
+  /* Unexpected character */
+  lunarity_byte_location_t start_location = state->cursor;
+  lunarity_advance_lexer_state(state);
+  return lunarity_new_token(LUNARITY_TOKEN_KIND_UNEXPECTED_CHARACTER,
+                            lunarity_new_span(start_location, state->cursor));
 }
 
 const char *KEYWORDS[] = {
