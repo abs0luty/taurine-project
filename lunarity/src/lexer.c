@@ -1,5 +1,4 @@
 #include "lunarity/include/lexer.h"
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -113,14 +112,12 @@ lunarity_next_name_token(lunarity_lexer_state_t *state) {
     lunarity_advance_lexer_state(state);
   }
 
-  char *name = malloc(state->cursor.offset - start_location.offset + 1);
-  memcpy(name, state->it.src + start_location.offset,
-         state->cursor.offset - start_location.offset);
-
-  lunarity_advance_lexer_state(state);
+  size_t length = state->cursor.offset - start_location.offset + 1;
+  char *name = malloc(length);
+  memcpy(name, state->it.src + start_location.offset, length);
+  name[length - 1] = '\0';
 
   lunarity_span_t span = lunarity_new_span(start_location, state->cursor);
-
   size_t kw_index = lunarity_binary_search_kw(name);
 
   if (kw_index != -1) {
@@ -295,7 +292,7 @@ static size_t lunarity_binary_search_kw(const char *name) {
 }
 
 static bool lunarity_is_whitespace(arty_codepoint_t codepoint) {
-  return codepoint == 0x009 || codepoint == 0x000a || codepoint == 0x000b ||
+  return codepoint == 0x0009 || codepoint == 0x000a || codepoint == 0x000b ||
          codepoint == 0x000c || codepoint == 0x000d || codepoint == 0x0020 ||
          codepoint == 0x0085 || codepoint == 0x200E || codepoint == 0x200F ||
          codepoint == 0x2028 || codepoint == 0x2029;
