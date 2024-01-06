@@ -1,8 +1,8 @@
 #ifndef _LUNARITY_AST_H_
 #define _LUNARITY_AST_H_
 
-#include <stdbool.h>
 #include "lunarity/include/token.h"
+#include <stdbool.h>
 
 typedef struct lunarity_prefix_expression {
   enum {
