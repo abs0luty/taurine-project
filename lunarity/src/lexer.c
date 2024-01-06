@@ -114,7 +114,7 @@ lunarity_next_name_token(lunarity_lexer_state_t *state) {
 
   size_t length = state->cursor.offset - start_location.offset + 1;
   char *name = malloc(length);
-  memcpy(name, state->it.src + start_location.offset, length);
+  memcpy(name, state->it.src + start_location.offset, length - 1);
   name[length - 1] = '\0';
 
   lunarity_span_t span = lunarity_new_span(start_location, state->cursor);
@@ -152,9 +152,11 @@ lunarity_next_string_token(lunarity_lexer_state_t *state) {
                               lunarity_new_span(state->cursor, state->cursor));
   }
 
-  char *string = malloc(state->cursor.offset - start_location.offset);
-  memcpy(string, state->it.src + start_location.offset + 1,
-         state->cursor.offset - start_location.offset - 1);
+  /* The first quote is ignored */
+  size_t length = state->cursor.offset - start_location.offset;
+  char *string = malloc(length);
+  memcpy(string, state->it.src + start_location.offset + 1, length - 1);
+  string[length - 1] = '\0';
 
   lunarity_advance_lexer_state(state);
   return lunarity_new_token_with_string_data(
