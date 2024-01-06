@@ -1,6 +1,67 @@
 #ifndef _LUNARITY_AST_H_
 #define _LUNARITY_AST_H_
 
+#include <stdbool.h>
+#include "lunarity/include/token.h"
+
+typedef struct lunarity_prefix_expression {
+  enum {
+    LUNARITY_PREFIX_EXPRESSION_KIND_VAR,
+    LUNARITY_PREFIX_EXPRESSION_KIND_CALL,
+    LUNARITY_PREFIX_EXPRESSION_KIND_PARENTHESIZED
+  } kind;
+  union {
+  } data;
+} lunarity_prefix_expression_t;
+
+typedef struct lunarity_boolean_literal_expression {
+  bool value;
+  lunarity_span_t span;
+} lunarity_boolean_literal_expression_t;
+
+typedef struct lunarity_string_literal_expression {
+  char *value;
+  lunarity_span_t span;
+} lunarity_string_literal_expression_t;
+
+typedef struct lunarity_binary_expression {
+  struct lunarity_expression *left;
+  lunarity_token_t op;
+  struct lunarity_expression *right;
+} lunarity_binary_expression_t;
+
+typedef struct lunarity_unary_expression {
+  lunarity_token_t op;
+  struct lunarity_expression *right;
+} lunarity_unary_expression_t;
+
+typedef struct lunarity_nil_expression {
+  lunarity_span_t span;
+} lunarity_nil_expression_t;
+
+typedef struct lunarity_expression {
+  enum {
+    LUNARITY_EXPRESSION_KIND_PREFIX,
+    LUNARITY_EXPRESSION_KIND_BOOLEAN,
+    LUNARITY_EXPRESSION_KIND_NIL,
+    LUNARITY_EXPRESSION_KIND_NUMERAL,
+    LUNARITY_EXPRESSION_KIND_STRING_LITERAL,
+    LUNARITY_EXPRESSION_KIND_BINARY,
+    LUNARITY_EXPRESSION_KIND_UNARY,
+    LUNARITY_EXPRESSION_KIND_VARARG,
+    LUNARITY_EXPRESSION_KIND_TABLE_CONSTRUCTOR,
+    LUNARITY_EXPRESSION_KIND_FUNCTION_DEF
+  } kind;
+  union {
+    lunarity_nil_expression_t nil;
+    lunarity_prefix_expression_t prefix;
+    lunarity_boolean_literal_expression_t boolean;
+    lunarity_string_literal_expression_t string;
+    lunarity_binary_expression_t binary;
+    lunarity_unary_expression_t unary;
+  } data;
+} lunarity_expression_t;
+
 typedef struct lunarity_assignment_statement {
 
 } lunarity_assignment_statement_t;
@@ -19,12 +80,12 @@ void lunarity_add_statement(lunarity_block_t *block,
                             lunarity_statement_t *statement);
 
 /**
- * Frees a statement's block
+ * @brief Frees a statement's block
  */
 void lunarity_free_block(lunarity_block_t *block);
 
 /**
- * A chunk is a Lua's unit of compilation.
+ * @brief Lua's unit of compilation.
  */
 typedef lunarity_block_t lunarity_chunk_t;
 
