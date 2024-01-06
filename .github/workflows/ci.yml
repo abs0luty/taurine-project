@@ -1,4 +1,4 @@
-name: 🔍 CI - Arty
+name: 🔍 CI
 on:
   pull_request:
     branches:
