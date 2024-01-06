@@ -10,14 +10,13 @@ lunarity_token_t lunarity_new_token(
   return token;
 }
 
-lunarity_token_t lunarity_new_token_with_data(
-    lunarity_token_kind_t kind,
-    lunarity_span_t span,
-    const char *data)
+lunarity_token_t lunarity_new_token_with_string_data(lunarity_token_kind_t kind,
+													 lunarity_span_t span,
+													 const char* data)
 {
   lunarity_token_t token;
   token.kind = kind;
   token.span = span;
-  token.data = data;
+  token.string = data;
   return token;
 }
