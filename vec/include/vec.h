@@ -3,16 +3,15 @@
 
 #define vec(type) type *
 
-typedef void (*vec_elem_destructor_t) (void *elem);
+typedef void (*vec_elem_destructor_t)(void *elem);
 
 typedef struct vec_metadata {
-	size_t len;
-	size_t capacity;
+  size_t len;
+  size_t capacity;
   vec_elem_destructor_t destructor;
 } vec_metadata_t;
 
-#define vec_metadata(vec) \
-  (&((vec_metadata_t *)(vec))[-1])
+#define vec_metadata(vec) (&((vec_metadata_t *)(vec))[-1])
 
 /**
  * @return a pointer to the first element of the vector
@@ -47,17 +46,17 @@ typedef struct vec_metadata {
 /**
  * @brief Erase all elements in the vector
  */
-#define vec_clear(src)                                           \
-  do {                                                           \
-    if (src) {                                                   \
-      vec_elem_destructor_t destructor = vec_elem_destructor();  \
-      if (destructor) {                                          \
-        for (register size_t i = 0; i < vec_len(src); i++) {     \
-          destructor(src[i]);                                    \
-        }                                                        \
-        vec_metadata(src)->len = 0;                              \
-      }                                                          \
-    }                                                            \
+#define vec_clear(src)                                                         \
+  do {                                                                         \
+    if (src) {                                                                 \
+      vec_elem_destructor_t destructor = vec_elem_destructor();                \
+      if (destructor) {                                                        \
+        for (register size_t i = 0; i < vec_len(src); i++) {                   \
+          destructor(src[i]);                                                  \
+        }                                                                      \
+        vec_metadata(src)->len = 0;                                            \
+      }                                                                        \
+    }                                                                          \
   } while (0)
 
 #endif /* _VEC_H_ */

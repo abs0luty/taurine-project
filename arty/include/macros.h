@@ -1,1 +1,1 @@
-#define _ARTY_NULLPTR ((void*)0)
+#define _ARTY_NULLPTR ((void *)0)
