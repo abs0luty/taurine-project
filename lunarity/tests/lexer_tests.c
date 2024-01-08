@@ -30,7 +30,7 @@
 #define CHECK_NEXT_TOKEN(token_kind, start_line, start_column, start_offset,   \
                          end_line, end_column, end_offset)                     \
   do {                                                                         \
-    lunarity_token_t token = lunarity_lexer_state_next_token(&state);                      \
+    lunarity_token_t token = lunarity_lexer_state_next_token(&state);          \
     CHECK_EQ(token.kind, token_kind);                                          \
     CHECK_EQ(token.span.start.line, start_line);                               \
     CHECK_EQ(token.span.start.column, start_column);                           \
@@ -39,7 +39,6 @@
     CHECK_EQ(token.span.end.column, end_column);                               \
     CHECK_EQ(token.span.end.offset, end_offset);                               \
   } while (0)
-
 
 /**
  * @brief   Advances the lexer state by one token and compares this token data
@@ -54,19 +53,19 @@
  * @param   string_data  Expected token string data.
  * @version 0.1.0
  */
-#define CHECK_NEXT_STRING_TOKEN(token_kind, start_line, start_column,             \
-                                start_offset, end_line, end_column,         \
-                                end_offset, string_data)                          \
+#define CHECK_NEXT_STRING_TOKEN(token_kind, start_line, start_column,          \
+                                start_offset, end_line, end_column,            \
+                                end_offset, string_data)                       \
   do {                                                                         \
-    lunarity_token_t token = lunarity_lexer_state_next_token(&state);                      \
-    CHECK_EQ(token.kind, token_kind);                                               \
-    CHECK_EQ(token.span.start.line, start_line);                              \
-    CHECK_EQ(token.span.start.column, start_column);                          \
-    CHECK_EQ(token.span.start.offset, start_offset);                          \
-    CHECK_EQ(token.span.end.line, end_line);                                  \
-    CHECK_EQ(token.span.end.column, end_column);                              \
-    CHECK_EQ(token.span.end.offset, end_offset);                              \
-    CHECK_STREQ(token.string, string_data);                                        \
+    lunarity_token_t token = lunarity_lexer_state_next_token(&state);          \
+    CHECK_EQ(token.kind, token_kind);                                          \
+    CHECK_EQ(token.span.start.line, start_line);                               \
+    CHECK_EQ(token.span.start.column, start_column);                           \
+    CHECK_EQ(token.span.start.offset, start_offset);                           \
+    CHECK_EQ(token.span.end.line, end_line);                                   \
+    CHECK_EQ(token.span.end.column, end_column);                               \
+    CHECK_EQ(token.span.end.offset, end_offset);                               \
+    CHECK_STREQ(token.string, string_data);                                    \
   } while (0)
 
 TEST(lexer_tests, eof) {

@@ -38,7 +38,8 @@ static arty_codepoint_t lunarity_to_ascii_lowercase(arty_codepoint_t codepoint);
  * @returns The next identifier or keyword token in the lexer state.
  * @version 0.1.0
  */
-static lunarity_token_t lunarity_lexer_state_next_name_token(lunarity_lexer_state_t *state);
+static lunarity_token_t
+lunarity_lexer_state_next_name_token(lunarity_lexer_state_t *state);
 
 /**
  * @brief   Advances the lexer state, consuming numeric characters.
@@ -204,7 +205,8 @@ static bool process_escape_sequence(lunarity_lexer_state_t *state,
     }                                                                          \
   } while (0)
 
-lunarity_token_t lunarity_lexer_state_next_token(lunarity_lexer_state_t *state) {
+lunarity_token_t
+lunarity_lexer_state_next_token(lunarity_lexer_state_t *state) {
   lunarity_lexer_state_skip_whitespaces(state);
 
   /* Identifier or keyword */
