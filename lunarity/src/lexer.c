@@ -38,7 +38,7 @@ static arty_codepoint_t lunarity_to_ascii_lowercase(arty_codepoint_t codepoint);
  * @returns The next identifier or keyword token in the lexer state.
  * @version 0.1.0
  */
-static lunarity_token_t lunarity_next_name_token(lunarity_lexer_state_t *state);
+static lunarity_token_t lunarity_lexer_state_next_name_token(lunarity_lexer_state_t *state);
 
 /**
  * @brief   Advances the lexer state, consuming numeric characters.
@@ -54,7 +54,7 @@ lunarity_next_number_token(lunarity_lexer_state_t *state);
  * @version 0.1.0
  */
 static lunarity_token_t
-lunarity_next_string_token(lunarity_lexer_state_t *state);
+lunarity_lexer_state_next_string_token(lunarity_lexer_state_t *state);
 
 static bool process_escape_sequence(lunarity_lexer_state_t *state,
                                     arty_codepoint_t *codepoint);
@@ -106,7 +106,7 @@ lunarity_lexer_state_skip_whitespaces(lunarity_lexer_state_t *state) {
 }
 
 static lunarity_token_t
-lunarity_next_name_token(lunarity_lexer_state_t *state) {
+lunarity_lexer_state_next_name_token(lunarity_lexer_state_t *state) {
   lunarity_byte_location_t start_location = state->cursor;
   while (arty_is_xid_continue(state->current) || state->current == '_') {
     lunarity_advance_lexer_state(state);
@@ -131,10 +131,13 @@ lunarity_next_name_token(lunarity_lexer_state_t *state) {
 
 // TODO: Implement numbers tokenization
 static lunarity_token_t
-lunarity_next_number_token(lunarity_lexer_state_t *state) {}
+lunarity_next_number_token(lunarity_lexer_state_t *state) {
+  lunarity_token_t token;
+  return token;
+}
 
 static lunarity_token_t
-lunarity_next_string_token(lunarity_lexer_state_t *state) {
+lunarity_lexer_state_next_string_token(lunarity_lexer_state_t *state) {
   lunarity_byte_location_t start_location = state->cursor;
   arty_codepoint_t quote = state->current;
   lunarity_advance_lexer_state(state);
@@ -166,71 +169,85 @@ lunarity_next_string_token(lunarity_lexer_state_t *state) {
 
 // TODO: Implement escape sequences in strings
 static bool process_escape_sequence(lunarity_lexer_state_t *state,
-                                    arty_codepoint_t *codepoint) {}
+                                    arty_codepoint_t *codepoint) {
+  return false;
+}
 
-#define SINGLE_BYTE_PUNCTUATION(_char, _kind)                                  \
-  if (state->current == _char) {                                               \
-    lunarity_span_t span = lunarity_new_single_byte_span(state->cursor);       \
-    lunarity_advance_lexer_state(state);                                       \
-    return lunarity_new_token(_kind, span);                                    \
-  }
+/**
+ * @brief   Scans for a single byte punctuation token.
+ * @param   byte       The byte to match.
+ * @param   name       The name of the punctuation in screaming snake case.
+ * @version 0.1.0
+ */
+#define SINGLE_BYTE_PUNCTUATION(byte, name)                                    \
+  do {                                                                         \
+    if (state->current == byte) {                                              \
+      lunarity_span_t span = lunarity_new_single_byte_span(state->cursor);     \
+      lunarity_advance_lexer_state(state);                                     \
+      return lunarity_new_token(LUNARITY_TOKEN_KIND_##name, span);             \
+    }                                                                          \
+  } while (0)
 
-#define DOUBLE_BYTE_PUNCTUATION(_char1, _char2, _kind)                         \
-  if (state->current == _char1 && state->next == _char2) {                     \
-    lunarity_span_t span = lunarity_new_double_byte_span(state->cursor);       \
-    lunarity_advance_lexer_state_twice(state);                                 \
-    return lunarity_new_token(_kind, span);                                    \
-  }
+/**
+ * @brief   Scans for a double byte punctuation token.
+ * @param   first_byte The first byte to match.
+ * @param   second_byte The second byte to match.
+ * @param   name       The name of the punctuation in screaming snake case.
+ * @version 0.1.0
+ */
+#define DOUBLE_BYTE_PUNCTUATION(first_byte, second_byte, name)                 \
+  do {                                                                         \
+    if (state->current == first_byte && state->next == second_byte) {          \
+      lunarity_span_t span = lunarity_new_double_byte_span(state->cursor);     \
+      lunarity_advance_lexer_state_twice(state);                               \
+      return lunarity_new_token(LUNARITY_TOKEN_KIND_##name, span);             \
+    }                                                                          \
+  } while (0)
 
-lunarity_token_t lunarity_next_token(lunarity_lexer_state_t *state) {
+lunarity_token_t lunarity_lexer_state_next_token(lunarity_lexer_state_t *state) {
   lunarity_lexer_state_skip_whitespaces(state);
 
   /* Identifier or keyword */
   if (arty_is_xid_start(state->current) || state->current == '_') {
-    return lunarity_next_name_token(state);
+    return lunarity_lexer_state_next_name_token(state);
   }
 
   /* String literal */
   if (state->current == '\'' || state->current == '"') {
-    return lunarity_next_string_token(state);
+    return lunarity_lexer_state_next_string_token(state);
   }
 
   /* Punctuation */
-  SINGLE_BYTE_PUNCTUATION('+', LUNARITY_TOKEN_KIND_PLUS)
-  SINGLE_BYTE_PUNCTUATION('-', LUNARITY_TOKEN_KIND_MINUS)
-  SINGLE_BYTE_PUNCTUATION('*', LUNARITY_TOKEN_KIND_ASTERISK)
-  SINGLE_BYTE_PUNCTUATION('%', LUNARITY_TOKEN_KIND_PERCENT)
-  SINGLE_BYTE_PUNCTUATION('^', LUNARITY_TOKEN_KIND_CARET)
-  SINGLE_BYTE_PUNCTUATION('#', LUNARITY_TOKEN_KIND_HASH)
-  SINGLE_BYTE_PUNCTUATION('(', LUNARITY_TOKEN_KIND_LPAREN)
-  SINGLE_BYTE_PUNCTUATION(')', LUNARITY_TOKEN_KIND_RPAREN)
-  SINGLE_BYTE_PUNCTUATION('{', LUNARITY_TOKEN_KIND_LBRACE)
-  SINGLE_BYTE_PUNCTUATION('}', LUNARITY_TOKEN_KIND_RBRACE)
-  SINGLE_BYTE_PUNCTUATION('[', LUNARITY_TOKEN_KIND_LBRACKET)
-  SINGLE_BYTE_PUNCTUATION(']', LUNARITY_TOKEN_KIND_RBRACKET)
-  SINGLE_BYTE_PUNCTUATION(',', LUNARITY_TOKEN_KIND_COMMA)
-  SINGLE_BYTE_PUNCTUATION(';', LUNARITY_TOKEN_KIND_SEMICOLON)
-  SINGLE_BYTE_PUNCTUATION('&', LUNARITY_TOKEN_KIND_AMPERSAND)
-  SINGLE_BYTE_PUNCTUATION('|', LUNARITY_TOKEN_KIND_BAR)
-
-  DOUBLE_BYTE_PUNCTUATION('>', '>', LUNARITY_TOKEN_KIND_GTGT)
-  DOUBLE_BYTE_PUNCTUATION('>', '=', LUNARITY_TOKEN_KIND_GE)
-  SINGLE_BYTE_PUNCTUATION('>', LUNARITY_TOKEN_KIND_GT)
-
-  DOUBLE_BYTE_PUNCTUATION('<', '<', LUNARITY_TOKEN_KIND_LTLT)
-  DOUBLE_BYTE_PUNCTUATION('<', '=', LUNARITY_TOKEN_KIND_LE)
-  SINGLE_BYTE_PUNCTUATION('<', LUNARITY_TOKEN_KIND_LT)
-
-  DOUBLE_BYTE_PUNCTUATION('/', '/', LUNARITY_TOKEN_KIND_DOUBLE_SLASH)
-  SINGLE_BYTE_PUNCTUATION('/', LUNARITY_TOKEN_KIND_SLASH)
-
-  DOUBLE_BYTE_PUNCTUATION('=', '=', LUNARITY_TOKEN_KIND_DOUBLE_EQ)
-  DOUBLE_BYTE_PUNCTUATION('~', '=', LUNARITY_TOKEN_KIND_TILDE_EQ)
-  SINGLE_BYTE_PUNCTUATION('=', LUNARITY_TOKEN_KIND_EQ)
-  SINGLE_BYTE_PUNCTUATION('~', LUNARITY_TOKEN_KIND_TILDE)
-
-  DOUBLE_BYTE_PUNCTUATION(':', ':', LUNARITY_TOKEN_KIND_DOUBLE_COLON)
-  SINGLE_BYTE_PUNCTUATION(':', LUNARITY_TOKEN_KIND_COLON)
+  SINGLE_BYTE_PUNCTUATION('+', PLUS);
+  SINGLE_BYTE_PUNCTUATION('-', MINUS);
+  SINGLE_BYTE_PUNCTUATION('*', ASTERISK);
+  SINGLE_BYTE_PUNCTUATION('%', PERCENT);
+  SINGLE_BYTE_PUNCTUATION('^', CARET);
+  SINGLE_BYTE_PUNCTUATION('#', HASH);
+  SINGLE_BYTE_PUNCTUATION('(', LPAREN);
+  SINGLE_BYTE_PUNCTUATION(')', RPAREN);
+  SINGLE_BYTE_PUNCTUATION('{', LBRACE);
+  SINGLE_BYTE_PUNCTUATION('}', RBRACE);
+  SINGLE_BYTE_PUNCTUATION('[', LBRACKET);
+  SINGLE_BYTE_PUNCTUATION(']', RBRACKET);
+  SINGLE_BYTE_PUNCTUATION(',', COMMA);
+  SINGLE_BYTE_PUNCTUATION(';', SEMICOLON);
+  SINGLE_BYTE_PUNCTUATION('&', AMPERSAND);
+  SINGLE_BYTE_PUNCTUATION('|', BAR);
+  DOUBLE_BYTE_PUNCTUATION('>', '>', GTGT);
+  DOUBLE_BYTE_PUNCTUATION('>', '=', GE);
+  SINGLE_BYTE_PUNCTUATION('>', GT);
+  DOUBLE_BYTE_PUNCTUATION('<', '<', LTLT);
+  DOUBLE_BYTE_PUNCTUATION('<', '=', LE);
+  SINGLE_BYTE_PUNCTUATION('<', LT);
+  DOUBLE_BYTE_PUNCTUATION('/', '/', DOUBLE_SLASH);
+  SINGLE_BYTE_PUNCTUATION('/', SLASH);
+  DOUBLE_BYTE_PUNCTUATION('=', '=', DOUBLE_EQ);
+  DOUBLE_BYTE_PUNCTUATION('~', '=', TILDE_EQ);
+  SINGLE_BYTE_PUNCTUATION('=', EQ);
+  SINGLE_BYTE_PUNCTUATION('~', TILDE);
+  DOUBLE_BYTE_PUNCTUATION(':', ':', DOUBLE_COLON);
+  SINGLE_BYTE_PUNCTUATION(':', COLON);
 
   /* Punctuation: `.`, `..` or `...` */
   if (state->current == '.') {

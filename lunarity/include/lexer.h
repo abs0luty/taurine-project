@@ -14,6 +14,6 @@ typedef struct lunarity_lexer_state {
 
 lunarity_lexer_state_t lunarity_new_lexer_state(arty_utf8_string_iterator_t it);
 
-lunarity_token_t lunarity_next_token(lunarity_lexer_state_t *state);
+lunarity_token_t lunarity_lexer_state_next_token(lunarity_lexer_state_t *state);
 
 #endif /* _LUNARITY_LEXER_H_ */

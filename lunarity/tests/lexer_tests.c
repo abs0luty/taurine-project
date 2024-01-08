@@ -1,35 +1,73 @@
 #include "lunarity/include/lexer.h"
 #include "tau/tau.h"
 
+/**
+ * @brief   Initializes a lexer state from a given Lunarity source code.
+ * @param   source The source code.
+ * @param   length The length of the source code in bytes.
+ * @version 0.1.0
+ */
 #define START_LEXER_TEST(source, length)                                       \
-  arty_utf8_string_iterator_t it =                                             \
-      arty_new_utf8_string_iterator(source, length);                           \
-  lunarity_lexer_state_t state = lunarity_new_lexer_state(it);                 \
-  lunarity_token_t token;
+  arty_utf8_string_iterator_t it;                                              \
+  lunarity_lexer_state_t state;                                                \
+  do {                                                                         \
+    it = arty_new_utf8_string_iterator(source, length);                        \
+    state = lunarity_new_lexer_state(it);                                      \
+  } while (0)
 
-#define CHECK_NEXT_TOKEN(_kind, _start_line, _start_column, _start_offset,     \
-                         _end_line, _end_column, _end_offset)                  \
-  token = lunarity_next_token(&state);                                         \
-  CHECK_EQ(token.kind, _kind);                                                 \
-  CHECK_EQ(token.span.start.line, _start_line);                                \
-  CHECK_EQ(token.span.start.column, _start_column);                            \
-  CHECK_EQ(token.span.start.offset, _start_offset);                            \
-  CHECK_EQ(token.span.end.line, _end_line);                                    \
-  CHECK_EQ(token.span.end.column, _end_column);                                \
-  CHECK_EQ(token.span.end.offset, _end_offset);
+/**
+ * @brief   Advances the lexer state by one token and compares this token data
+ *          with an expected values.
+ * @param   token_kind Expected token kind.
+ * @param   start_line Expected token span's first byte line number.
+ * @param   start_column Expected token span's first byte column number.
+ * @param   start_offset Expected token span's first byte offset.
+ * @param   end_line Expected token span's last byte line number.
+ * @param   end_column Expected token span's last byte column number.
+ * @param   end_offset Expected token span's last byte offset.
+ * @version 0.1.0
+ */
+#define CHECK_NEXT_TOKEN(token_kind, start_line, start_column, start_offset,   \
+                         end_line, end_column, end_offset)                     \
+  do {                                                                         \
+    lunarity_token_t token = lunarity_lexer_state_next_token(&state);                      \
+    CHECK_EQ(token.kind, token_kind);                                          \
+    CHECK_EQ(token.span.start.line, start_line);                               \
+    CHECK_EQ(token.span.start.column, start_column);                           \
+    CHECK_EQ(token.span.start.offset, start_offset);                           \
+    CHECK_EQ(token.span.end.line, end_line);                                   \
+    CHECK_EQ(token.span.end.column, end_column);                               \
+    CHECK_EQ(token.span.end.offset, end_offset);                               \
+  } while (0)
 
-#define CHECK_NEXT_STRING_TOKEN(_kind, _start_line, _start_column,             \
-                                _start_offset, _end_line, _end_column,         \
-                                _end_offset, _string)                          \
-  token = lunarity_next_token(&state);                                         \
-  CHECK_EQ(token.kind, _kind);                                                 \
-  CHECK_EQ(token.span.start.line, _start_line);                                \
-  CHECK_EQ(token.span.start.column, _start_column);                            \
-  CHECK_EQ(token.span.start.offset, _start_offset);                            \
-  CHECK_EQ(token.span.end.line, _end_line);                                    \
-  CHECK_EQ(token.span.end.column, _end_column);                                \
-  CHECK_EQ(token.span.end.offset, _end_offset);                                \
-  CHECK_STREQ(token.string, _string);
+
+/**
+ * @brief   Advances the lexer state by one token and compares this token data
+ *          with an expected values.
+ * @param   token_kind   Expected token kind.
+ * @param   start_line   Expected token span's first byte line number.
+ * @param   start_column Expected token span's first byte column number.
+ * @param   start_offset Expected token span's first byte offset.
+ * @param   end_line     Expected token span's last byte line number.
+ * @param   end_column   Expected token span's last byte column number.
+ * @param   end_offset   Expected token span's last byte offset.
+ * @param   string_data  Expected token string data.
+ * @version 0.1.0
+ */
+#define CHECK_NEXT_STRING_TOKEN(token_kind, start_line, start_column,             \
+                                start_offset, end_line, end_column,         \
+                                end_offset, string_data)                          \
+  do {                                                                         \
+    lunarity_token_t token = lunarity_lexer_state_next_token(&state);                      \
+    CHECK_EQ(token.kind, token_kind);                                               \
+    CHECK_EQ(token.span.start.line, start_line);                              \
+    CHECK_EQ(token.span.start.column, start_column);                          \
+    CHECK_EQ(token.span.start.offset, start_offset);                          \
+    CHECK_EQ(token.span.end.line, end_line);                                  \
+    CHECK_EQ(token.span.end.column, end_column);                              \
+    CHECK_EQ(token.span.end.offset, end_offset);                              \
+    CHECK_STREQ(token.string, string_data);                                        \
+  } while (0)
 
 TEST(lexer_tests, eof) {
   START_LEXER_TEST("", 0);
