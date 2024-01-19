@@ -1,6 +1,7 @@
 #ifndef _LUNARITY_AST_H_
 #define _LUNARITY_AST_H_
 
+#include "vec/include/vec.h"
 #include "lunarity/include/token.h"
 #include <stdbool.h>
 
@@ -71,21 +72,31 @@ typedef struct lunarity_statement {
 } lunarity_statement_t;
 
 typedef struct lunarity_block {
-  lunarity_statement_t *statements;
+  vec(lunarity_statement_t) statements;
 } lunarity_block_t;
 
+/**
+ * @returns An empty statement's block.
+ * @version 0.1.0
+ */
 lunarity_block_t lunarity_new_block();
 
+/**
+ * @brief Adds a statement into the statement's block.
+ * @version 0.1.0
+ */
 void lunarity_add_statement(lunarity_block_t *block,
                             lunarity_statement_t *statement);
 
 /**
- * @brief Frees a statement's block
+ * @brief   Frees a statement's block
+ * @version 0.1.0
  */
 void lunarity_free_block(lunarity_block_t *block);
 
 /**
- * @brief Lua's unit of compilation.
+ * @brief   Lua's unit of compilation.
+ * @version 0.1.0
  */
 typedef lunarity_block_t lunarity_chunk_t;
 

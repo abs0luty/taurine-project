@@ -130,7 +130,7 @@ lunarity_lexer_state_next_name_token(lunarity_lexer_state_t *state) {
   }
 }
 
-// TODO: Implement numbers tokenization
+// TODO: Implement scanning numbers 
 static lunarity_token_t
 lunarity_next_number_token(lunarity_lexer_state_t *state) {
   lunarity_token_t token;
@@ -148,6 +148,7 @@ lunarity_lexer_state_next_string_token(lunarity_lexer_state_t *state) {
       break;
     }
 
+    // TODO: Implement escape sequences
     lunarity_advance_lexer_state(state);
   }
 
@@ -156,7 +157,7 @@ lunarity_lexer_state_next_string_token(lunarity_lexer_state_t *state) {
                               lunarity_new_span(state->cursor, state->cursor));
   }
 
-  /* The first quote is ignored */
+  // The first quote is ignored
   size_t length = state->cursor.offset - start_location.offset;
   char *string = malloc(length);
   memcpy(string, state->it.src + start_location.offset + 1, length - 1);
@@ -209,17 +210,17 @@ lunarity_token_t
 lunarity_lexer_state_next_token(lunarity_lexer_state_t *state) {
   lunarity_lexer_state_skip_whitespaces(state);
 
-  /* Identifier or keyword */
+  // Identifier or keyword 
   if (arty_is_xid_start(state->current) || state->current == '_') {
     return lunarity_lexer_state_next_name_token(state);
   }
 
-  /* String literal */
+  // String literal 
   if (state->current == '\'' || state->current == '"') {
     return lunarity_lexer_state_next_string_token(state);
   }
 
-  /* Punctuation */
+  // Punctuation
   SINGLE_BYTE_PUNCTUATION('+', PLUS);
   SINGLE_BYTE_PUNCTUATION('-', MINUS);
   SINGLE_BYTE_PUNCTUATION('*', ASTERISK);
@@ -251,7 +252,7 @@ lunarity_lexer_state_next_token(lunarity_lexer_state_t *state) {
   DOUBLE_BYTE_PUNCTUATION(':', ':', DOUBLE_COLON);
   SINGLE_BYTE_PUNCTUATION(':', COLON);
 
-  /* Punctuation: `.`, `..` or `...` */
+  // Punctuation: `.`, `..` or `...`
   if (state->current == '.') {
     if (state->next == '.') {
       lunarity_byte_location_t start_location = state->cursor;
@@ -275,19 +276,20 @@ lunarity_lexer_state_next_token(lunarity_lexer_state_t *state) {
                               lunarity_new_single_byte_span(start_location));
   }
 
-  /* End of file */
+  // End of file
   if (state->current == NO_CODEPOINT) {
     return lunarity_new_token(LUNARITY_TOKEN_KIND_EOF,
                               lunarity_new_single_byte_span(state->cursor));
   }
 
-  /* Unexpected character */
+  // Unexpected character
   lunarity_byte_location_t start_location = state->cursor;
   lunarity_advance_lexer_state(state);
   return lunarity_new_token(LUNARITY_TOKEN_KIND_UNEXPECTED_CHARACTER,
                             lunarity_new_span(start_location, state->cursor));
 }
 
+// List of sorted Lunarity's keywords.
 const char *KEYWORDS[] = {
     "and",      "break",  "do",   "else", "elseif", "end",  "false", "for",
     "function", "goto",   "if",   "in",   "local",  "nil",  "not",   "or",
