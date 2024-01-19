@@ -1,7 +1,6 @@
 #ifndef _ARTY_UNICODE_H_
 #define _ARTY_UNICODE_H_
 
-#include "macros.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>

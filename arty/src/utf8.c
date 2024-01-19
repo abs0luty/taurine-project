@@ -54,7 +54,7 @@ arty_utf8_bytes_in_codepoint_by_leading_byte(unsigned char lead) {
 }
 
 bool arty_encode_codepoint_in_utf8(arty_codepoint_t codepoint, char *dst) {
-  if (dst == _ARTY_NULLPTR || codepoint < 0x00) {
+  if (dst == (void*) 0 || codepoint < 0x00) {
     return false;
   }
 
@@ -90,7 +90,7 @@ bool arty_encode_codepoint_in_utf8_to_null_terminated_string(
 }
 
 arty_codepoint_t arty_decode_codepoint_from_utf8(const char *src) {
-  if (src == _ARTY_NULLPTR || *src == '\0') {
+  if (src == (void *) 0 || *src == '\0') {
     return 0;
   }
 

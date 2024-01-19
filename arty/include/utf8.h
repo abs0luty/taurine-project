@@ -1,9 +1,7 @@
 #ifndef _ARTY_UTF8_H_
 #define _ARTY_UTF8_H_
 
-#include "macros.h"
 #include "unicode.h"
-
 #include <stddef.h>
 
 #ifdef __cplusplus
@@ -58,11 +56,11 @@ arty_utf8_bytes_in_codepoint_by_leading_byte(unsigned char lead);
  *             Buffer isn't touched if the codepoint isn't valid.
  *             Buffer is maximally 4 bytes long and isn't null-terminated.
  *             Size of the buffer can be calculated with
- * #arty_codepoint_size_in_utf8.
+ *             #arty_codepoint_size_in_utf8.
  * @param      codepoint The codepoint to encode.
  * @param[out] dst The buffer where the encoded codepoint will be written.
- * @return     `true` if the codepoint was encoded successfully, `false`
- * otherwise.
+ * @returns    `true` if the codepoint was encoded successfully, `false`
+ *             otherwise.
  * @version    0.1.0
  */
 bool arty_encode_codepoint_in_utf8(arty_codepoint_t codepoint, char *dst);
@@ -72,11 +70,11 @@ bool arty_encode_codepoint_in_utf8(arty_codepoint_t codepoint, char *dst);
  *             Buffer isn't touched if the codepoint isn't valid.
  *             Buffer is maximally 4 bytes long and is null-terminated.
  *             Size of the buffer can be calculated with
- * #arty_codepoint_size_in_utf8.
+ *             #arty_codepoint_size_in_utf8.
  * @param      codepoint The codepoint to encode.
  * @param[out] dst The buffer where the encoded codepoint will be written.
- * @return     `true` if the codepoint was encoded successfully, `false`
- * otherwise.
+ * @returns    `true` if the codepoint was encoded successfully, `false`
+ *             otherwise.
  * @version    0.1.0
  */
 bool arty_encode_codepoint_in_utf8_to_null_terminated_string(
@@ -85,7 +83,7 @@ bool arty_encode_codepoint_in_utf8_to_null_terminated_string(
 /**
  * @brief      Decodes the given UTF8 bytes into the codepoint.
  * @param      src The UTF8 bytes to decode.
- * @return     The codepoint decoded from the UTF8 bytes.
+ * @returns    The codepoint decoded from the UTF8 bytes.
  *             `0` if the codepoint isn't valid.
  * @version    0.1.0
  */
