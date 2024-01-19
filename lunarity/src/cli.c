@@ -2,12 +2,13 @@
 #include "arty/include/utf8.h"
 #include "argparse/include/argparse.h"
 #include <stdio.h>
+#include <string.h>
 
 int cmd_lex(size_t argc, const char* argv[]) {
   const char *filepath = NULL;
   struct argparse_option options[] = {
       OPT_HELP(),
-      OPT_STRING("f", "filepath", &filepath, "input file path", NULL, 0, 0),
+      OPT_STRING('f', "filepath", &filepath, "input file path", NULL, 0, 0),
       OPT_END(),
   };
   struct argparse argparse;
@@ -32,7 +33,7 @@ int main(size_t argc, const char* argv[]) {
       OPT_END(),
   };
   argparse_init(&argparse, options, usages, ARGPARSE_STOP_AT_NON_OPTION);
-  if (argc < 1) {
+  if (argc < 2) {
     argparse_usage(&argparse);
     return -1;
   }
@@ -46,6 +47,9 @@ int main(size_t argc, const char* argv[]) {
 
   if (cmd) {
     return cmd->func(argc, argv);
+  } else {
+    argparse_usage(&argparse);
+    return -1;
   }
 
   return 0;
