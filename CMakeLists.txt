@@ -34,6 +34,13 @@ define_library(
     arty/include/unicode.h
 )
 
+define_library_tests(
+  NAME arty_tests
+  SOURCE arty/tests/tests.c
+  DEPENDENCIES
+    arty
+)
+
 define_library(
   NAME lunarity
   SOURCES
