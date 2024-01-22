@@ -8,6 +8,8 @@ on:
       - "tau/**"
       - "lunarity/**"
       - "apple_map/**"
+      - "cesium/**"
+      - "vec/**"
       - ".github/workflows/ci.yml"
       - "CMakeLists.txt"
   push:
@@ -18,6 +20,8 @@ on:
       - "tau/**"
       - "lunarity/**"
       - "apple_map/**"
+      - "cesium/**"
+      - "vec/**"
       - ".github/workflows/ci.yml"
       - "CMakeLists.txt"
   workflow_dispatch:
