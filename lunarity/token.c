@@ -1,4 +1,4 @@
-#include "lunarity/include/token.h"
+#include "lunarity/token.h"
 
 lunarity_token_t lunarity_new_token(lunarity_token_kind_t kind,
                                     lunarity_span_t span) {

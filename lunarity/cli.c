@@ -1,6 +1,6 @@
-#include "argparse/include/argparse.h"
-#include "arty/include/utf8.h"
-#include "lunarity/include/lexer.h"
+#include "argparse/argparse.h"
+#include "arty/utf8.h"
+#include "lunarity/lexer.h"
 #include <stdio.h>
 #include <string.h>
 

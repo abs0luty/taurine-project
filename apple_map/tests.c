@@ -1,4 +1,4 @@
-#include "apple_map/include/apple_map.h"
+#include "apple_map/apple_map.h"
 #include "tau/tau.h"
 
 TEST(apple_map_tests, apple_map_insert_and_get) {

@@ -1,4 +1,4 @@
-#include "apple_map/include/apple_map.h"
+#include "apple_map/apple_map.h"
 
 #include <stdlib.h>
 #include <string.h>

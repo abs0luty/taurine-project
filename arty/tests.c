@@ -1,5 +1,5 @@
-#include "arty/include/unicode.h"
-#include "arty/include/utf8.h"
+#include "arty/unicode.h"
+#include "arty/utf8.h"
 #include "tau/tau.h"
 
 TEST(arty_tests, arty_utf8_bytes_in_codepoint) {

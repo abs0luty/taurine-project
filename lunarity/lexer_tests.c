@@ -1,4 +1,4 @@
-#include "lunarity/include/lexer.h"
+#include "lunarity/lexer.h"
 #include "tau/tau.h"
 
 /**

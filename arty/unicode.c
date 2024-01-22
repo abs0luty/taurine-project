@@ -1,4 +1,4 @@
-#include "arty/include/unicode.h"
+#include "arty/unicode.h"
 
 typedef struct {
   arty_codepoint_t start;
