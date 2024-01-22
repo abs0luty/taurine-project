@@ -1,7 +1,7 @@
 #ifndef _LUNARITY_PARSER_H_
 #define _LUNARITY_PARSER_H_
 
-#include "lunarity/include/lexer.h"
+#include "lunarity/lexer.h"
 
 #ifdef __cplusplus
 extern "C" {

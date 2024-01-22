@@ -108,7 +108,7 @@ lunarity_token_t lunarity_new_token_with_string_data(lunarity_token_kind_t kind,
                                                      const char *data);
 
 #ifdef __cplusplus
-extern "C" {
+}
 #endif
 
 #endif /* _LUNARITY_TOKEN_H_ */

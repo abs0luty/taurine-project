@@ -5,6 +5,10 @@
 #include "vec/vec.h"
 #include <stdbool.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct lunarity_prefix_expression {
   enum {
     LUNARITY_PREFIX_EXPRESSION_KIND_VAR,
@@ -99,5 +103,9 @@ void lunarity_free_block(lunarity_block_t *block);
  * @version 0.1.0
  */
 typedef lunarity_block_t lunarity_chunk_t;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _LUNARITY_AST_H_ */
