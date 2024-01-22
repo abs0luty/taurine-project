@@ -10,18 +10,18 @@ extern "C" {
 
 typedef struct {
   const char *src;
-  size_t byte_offset;
-  size_t string_size;
+  size_t offset, len;
 } arty_utf8_string_iterator_t;
 
 /**
  * @brief   Creates an iterator for the given UTF8 string.
  * @param   src The UTF8 string to iterate over.
- * @return  The created iterator.
+ * @param   len The length of the string in bytes.
+ * @returns The created iterator.
  * @version 0.1.0
  */
 arty_utf8_string_iterator_t arty_new_utf8_string_iterator(const char *src,
-                                                          size_t string_size);
+                                                          size_t len);
 
 /**
  * @brief   Advances the iterator and returns the next codepoint.
@@ -35,7 +35,7 @@ arty_advance_utf8_string_iterator(arty_utf8_string_iterator_t *it);
 /**
  * @brief   Returns the size of the given codepoint in UTF8 bytes.
  * @param   codepoint The codepoint to get the size of.
- * @return  The size of the codepoint in bytes if codepoint is valid
+ * @returns The size of the codepoint in bytes if codepoint is valid
  *          and `0` otherwise.
  * @version 0.1.0
  */
@@ -44,7 +44,7 @@ arty_codepoint_size_t arty_utf8_bytes_in_codepoint(arty_codepoint_t codepoint);
 /**
  * @brief   Returns the size of the given codepoint in UTF8 bytes.
  * @param   lead The leading byte of the codepoint in UTF8.
- * @return  The potential size of the codepoint in bytes
+ * @returns The potential size of the codepoint in bytes
  *          if codepoint is valid and `0` otherwise.
  * @version 0.1.0
  */
@@ -81,11 +81,11 @@ bool arty_encode_codepoint_in_utf8_to_null_terminated_string(
     arty_codepoint_t codepoint, char *dst);
 
 /**
- * @brief      Decodes the given UTF8 bytes into the codepoint.
- * @param      src The UTF8 bytes to decode.
- * @returns    The codepoint decoded from the UTF8 bytes.
- *             `0` if the codepoint isn't valid.
- * @version    0.1.0
+ * @brief    Decodes the given UTF8 bytes into the codepoint.
+ * @param    src The UTF8 bytes to decode.
+ * @returns  The codepoint decoded from the UTF8 bytes.
+ *           `0` if the codepoint isn't valid.
+ * @version  0.1.0
  */
 arty_codepoint_t arty_decode_codepoint_from_utf8(const char *src);
 

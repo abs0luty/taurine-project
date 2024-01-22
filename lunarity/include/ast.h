@@ -1,8 +1,8 @@
 #ifndef _LUNARITY_AST_H_
 #define _LUNARITY_AST_H_
 
-#include "vec/include/vec.h"
 #include "lunarity/include/token.h"
+#include "vec/include/vec.h"
 #include <stdbool.h>
 
 typedef struct lunarity_prefix_expression {

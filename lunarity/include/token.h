@@ -3,6 +3,10 @@
 
 #include "location.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef enum lunarity_token_kind {
   LUNARITY_TOKEN_KIND_EOF,
 
@@ -85,7 +89,7 @@ typedef struct lunarity_token {
  * Create a new token
  * @param   kind The kind of the token
  * @param   span The location of the token
- * @return  The new token
+ * @returns The new token
  * @version 0.1.0
  */
 lunarity_token_t lunarity_new_token(lunarity_token_kind_t kind,
@@ -96,11 +100,15 @@ lunarity_token_t lunarity_new_token(lunarity_token_kind_t kind,
  * @param   kind The kind of the token
  * @param   span The location of the token
  * @param   data The string data that the token contains
- * @return  The new token
+ * @returns The new token
  * @version 0.1.0
  */
 lunarity_token_t lunarity_new_token_with_string_data(lunarity_token_kind_t kind,
                                                      lunarity_span_t span,
                                                      const char *data);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #endif /* _LUNARITY_TOKEN_H_ */

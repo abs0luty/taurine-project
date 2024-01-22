@@ -130,7 +130,7 @@ lunarity_lexer_state_next_name_token(lunarity_lexer_state_t *state) {
   }
 }
 
-// TODO: Implement scanning numbers 
+// TODO: Implement scanning numbers
 static lunarity_token_t
 lunarity_next_number_token(lunarity_lexer_state_t *state) {
   lunarity_token_t token;
@@ -210,12 +210,12 @@ lunarity_token_t
 lunarity_lexer_state_next_token(lunarity_lexer_state_t *state) {
   lunarity_lexer_state_skip_whitespaces(state);
 
-  // Identifier or keyword 
+  // Identifier or keyword
   if (arty_is_xid_start(state->current) || state->current == '_') {
     return lunarity_lexer_state_next_name_token(state);
   }
 
-  // String literal 
+  // String literal
   if (state->current == '\'' || state->current == '"') {
     return lunarity_lexer_state_next_string_token(state);
   }

@@ -59,18 +59,18 @@ Copyright (c) 2021 Jason Dsouza <@jasmcaus>
 // Get the type of `val`
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
 #define TAU_TYPEOF(val)                                                        \
-  printf("%s\n", _Generic((val),                                               \
-                 signed char: "signed char",                                   \
-                 unsigned char: "unsigned char",                               \
-                 signed short: "signed short",                                 \
-                 unsigned short: "unsigned short",                             \
-                 signed int: "signed int",                                     \
-                 unsigned int: "unsigned int",                                 \
-                 signed long long: "signed long long",                         \
-                 unsigned long long: "unsigned long long",                     \
-                 float: "float",                                               \
-                 double: "double",                                             \
-                 default: "unknown type"))
+  printf("%s\n", _Generic((val), signed char                                   \
+                          : "signed char", unsigned char                       \
+                          : "unsigned char", signed short                      \
+                          : "signed short", unsigned short                     \
+                          : "unsigned short", signed int                       \
+                          : "signed int", unsigned int                         \
+                          : "unsigned int", signed long long                   \
+                          : "signed long long", unsigned long long             \
+                          : "unsigned long long", float                        \
+                          : "float", double                                    \
+                          : "double", default                                  \
+                          : "unknown type"))
 #else
 #define TAU_TYPEOF(val)
 #endif

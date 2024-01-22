@@ -1,10 +1,10 @@
-#include "lunarity/include/lexer.h"
-#include "arty/include/utf8.h"
 #include "argparse/include/argparse.h"
+#include "arty/include/utf8.h"
+#include "lunarity/include/lexer.h"
 #include <stdio.h>
 #include <string.h>
 
-int cmd_lex(size_t argc, const char* argv[]) {
+int cmd_lex(size_t argc, const char *argv[]) {
   const char *filepath = NULL;
   struct argparse_option options[] = {
       OPT_HELP(),
@@ -18,15 +18,15 @@ int cmd_lex(size_t argc, const char* argv[]) {
 }
 
 struct cmd {
-  const char* name;
-  int (*func)(size_t argc, const char* argv[]);
+  const char *name;
+  int (*func)(size_t argc, const char *argv[]);
 };
 
 static struct cmd commands[] = {{"lex", cmd_lex}};
 static const char *const usages[] = {"subcommands [options] [cmd] [args]",
                                      NULL};
 
-int main(size_t argc, const char* argv[]) {
+int main(size_t argc, const char *argv[]) {
   struct argparse argparse;
   struct argparse_option options[] = {
       OPT_HELP(),
@@ -38,7 +38,7 @@ int main(size_t argc, const char* argv[]) {
     return -1;
   }
 
-  struct cmd* cmd = NULL;
+  struct cmd *cmd = NULL;
   for (register size_t i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
     if (!strcmp(argv[1], commands[i].name)) {
       cmd = &commands[i];

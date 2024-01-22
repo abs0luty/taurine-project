@@ -1,23 +1,23 @@
 #include "arty/include/utf8.h"
 
 arty_utf8_string_iterator_t arty_new_utf8_string_iterator(const char *src,
-                                                          size_t string_size) {
+                                                          size_t len) {
   arty_utf8_string_iterator_t it;
   it.src = src;
-  it.byte_offset = 0;
-  it.string_size = string_size;
+  it.offset = 0;
+  it.len = len;
   return it;
 }
 
 arty_codepoint_t
 arty_advance_utf8_string_iterator(arty_utf8_string_iterator_t *it) {
-  if (it->byte_offset >= it->string_size) {
+  if (it->offset >= it->len) {
     return NO_CODEPOINT;
   }
 
   arty_codepoint_t codepoint =
-      arty_decode_codepoint_from_utf8(it->src + it->byte_offset);
-  it->byte_offset += arty_utf8_bytes_in_codepoint(codepoint);
+      arty_decode_codepoint_from_utf8(it->src + it->offset);
+  it->offset += arty_utf8_bytes_in_codepoint(codepoint);
 
   return codepoint;
 }
@@ -54,7 +54,7 @@ arty_utf8_bytes_in_codepoint_by_leading_byte(unsigned char lead) {
 }
 
 bool arty_encode_codepoint_in_utf8(arty_codepoint_t codepoint, char *dst) {
-  if (dst == (void*) 0 || codepoint < 0x00) {
+  if (dst == (void *)0 || codepoint < 0x00) {
     return false;
   }
 
@@ -90,7 +90,7 @@ bool arty_encode_codepoint_in_utf8_to_null_terminated_string(
 }
 
 arty_codepoint_t arty_decode_codepoint_from_utf8(const char *src) {
-  if (src == (void *) 0 || *src == '\0') {
+  if (src == (void *)0 || *src == '\0') {
     return 0;
   }
 
