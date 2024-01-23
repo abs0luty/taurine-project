@@ -135,9 +135,17 @@ TEST(lexer_tests, string) {
   CHECK_NEXT_TOKEN(LUNARITY_TOKEN_KIND_EOF, 1, 6, 6, 1, 7, 7);
 }
 
+TEST(lexer_tests, string_with_single_byte_escape_sequences) {
+  START_LEXER_TEST("\"test\\n\"", 8);
+  CHECK_NEXT_STRING_TOKEN(LUNARITY_TOKEN_KIND_STRING, 1, 0, 0, 1, 8, 8,
+                          "test\n");
+  CHECK_NEXT_TOKEN(LUNARITY_TOKEN_KIND_EOF, 1, 8, 8, 1, 9, 9);
+}
+
 TEST(lexer_tests, unexpected_character) {
   START_LEXER_TEST("`", 1);
-  CHECK_NEXT_TOKEN(LUNARITY_TOKEN_KIND_UNEXPECTED_CHARACTER, 1, 0, 0, 1, 1, 1);
+  CHECK_NEXT_TOKEN(LUNARITY_TOKEN_KIND_UNEXPECTED_CHARACTER_ERROR, 1, 0, 0, 1,
+                   1, 1);
   CHECK_NEXT_TOKEN(LUNARITY_TOKEN_KIND_EOF, 1, 1, 1, 1, 2, 2);
 }
 

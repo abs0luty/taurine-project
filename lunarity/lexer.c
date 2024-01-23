@@ -1,4 +1,8 @@
 #include "lunarity/lexer.h"
+
+#define VEC_LOGARITHMIC_GROWTH
+#include "vec/vec.h"
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -12,7 +16,8 @@ static void lunarity_advance_lexer_state(lunarity_lexer_state_t *state);
  * @brief   Advances the lexer state by two Unicode codepoints.
  * @version 0.1.0
  */
-static inline void lunarity_advance_lexer_state_twice(lunarity_lexer_state_t *state);
+static inline void
+lunarity_advance_lexer_state_twice(lunarity_lexer_state_t *state);
 
 /**
  * @brief   Skips all next whitespace characters in the lexer state.
@@ -31,7 +36,8 @@ static inline bool lunarity_is_whitespace(arty_codepoint_t codepoint);
  * @returns The ASCII lowercase version of the given codepoint.
  * @version 0.1.0
  */
-static inline arty_codepoint_t lunarity_to_ascii_lowercase(arty_codepoint_t codepoint);
+static inline arty_codepoint_t
+lunarity_to_ascii_lowercase(arty_codepoint_t codepoint);
 
 /**
  * @brief   Advances the lexer state, consuming XID_Continue characters.
@@ -57,8 +63,20 @@ lunarity_next_number_token(lunarity_lexer_state_t *state);
 static inline lunarity_token_t
 lunarity_lexer_state_next_string_token(lunarity_lexer_state_t *state);
 
-static bool process_escape_sequence(lunarity_lexer_state_t *state,
-                                    arty_codepoint_t *codepoint);
+/**
+ * @brief      Parses escape sequence in string literals.
+ * @param      state       The lexer's state.
+ * @param[out] buffer      The string buffer responsible for storing string literal.
+ * @param[out] error_token The error token in case error appeared while scanning
+ *                         the escape sequence.
+ * @returns    `true` is processing the escape sequence was successful,
+ * 	       `false` otherwise.
+ * @version    0.1.0
+ */
+static inline bool
+lunarity_process_escape_sequence(lunarity_lexer_state_t *state,
+                                 vec(char) buffer,
+                                 lunarity_token_t *error_token);
 
 /**
  * @brief   Searches for a keyword in the list of keywords.
@@ -94,7 +112,8 @@ static void lunarity_advance_lexer_state(lunarity_lexer_state_t *state) {
   state->next = arty_advance_utf8_string_iterator(&state->it);
 }
 
-static inline void lunarity_advance_lexer_state_twice(lunarity_lexer_state_t *state) {
+static inline void
+lunarity_advance_lexer_state_twice(lunarity_lexer_state_t *state) {
   lunarity_advance_lexer_state(state);
   lunarity_advance_lexer_state(state);
 }
@@ -143,36 +162,98 @@ lunarity_lexer_state_next_string_token(lunarity_lexer_state_t *state) {
   arty_codepoint_t quote = state->current;
   lunarity_advance_lexer_state(state);
 
+  vec(char) buffer = new_empty_vec();
+
   while (state->current != '\n' && state->current != NO_CODEPOINT) {
     if (state->current == '"' || state->current == '\'') {
       break;
     }
 
-    // TODO: Implement escape sequences
+    if (state->current == (arty_codepoint_t) '\\') {
+      lunarity_token_t error_token;
+      bool ok = lunarity_process_escape_sequence(state, buffer, &error_token);
+
+      if (!ok) {
+        return error_token;
+      }
+
+      continue;
+    }
+
+    char utf8_bytes[4];
+    arty_encode_codepoint_in_utf8(state->current, utf8_bytes);
+    size_t codepoint_len = arty_utf8_bytes_in_codepoint(state->current);
+
+    for (register size_t i = 0; i < codepoint_len; i++) {
+      vec_push_back(buffer, utf8_bytes[i]);
+    }
+
     lunarity_advance_lexer_state(state);
   }
 
   if (state->current != quote) {
-    return lunarity_new_token(LUNARITY_TOKEN_KIND_UNTERMINATED_STRING_LITERAL,
-                              lunarity_new_span(state->cursor, state->cursor));
+    return lunarity_new_token(
+        LUNARITY_TOKEN_KIND_UNTERMINATED_STRING_LITERAL_ERROR,
+        lunarity_new_span(state->cursor, state->cursor));
   }
 
-  // The first quote is ignored
-  size_t length = state->cursor.offset - start_location.offset;
-  char *string = malloc(length);
-  memcpy(string, state->it.src + start_location.offset + 1, length - 1);
-  string[length - 1] = '\0';
-
   lunarity_advance_lexer_state(state);
+
   return lunarity_new_token_with_string_data(
       LUNARITY_TOKEN_KIND_STRING,
-      lunarity_new_span(start_location, state->cursor), string);
+      lunarity_new_span(start_location, state->cursor), buffer);
 }
 
 // TODO: Implement escape sequences in strings
-static bool process_escape_sequence(lunarity_lexer_state_t *state,
-                                    arty_codepoint_t *codepoint) {
-  return false;
+static inline bool
+lunarity_process_escape_sequence(lunarity_lexer_state_t *state,
+                                 vec(char) buffer,
+                                 lunarity_token_t *error_token) {
+  // Skip `\`.
+  lunarity_advance_lexer_state(state);
+
+  switch (state->current) {
+  case NO_CODEPOINT:
+    *error_token =
+        lunarity_new_token(LUNARITY_TOKEN_KIND_EMPTY_ESCAPE_SEQUENCE_ERROR,
+                           lunarity_new_single_byte_span(state->cursor));
+    return false;
+  case 'b':
+    vec_push_back(buffer, '\b');
+  lunarity_advance_lexer_state(state);
+    break;
+  case 'f':
+    vec_push_back(buffer, '\f');
+  lunarity_advance_lexer_state(state);
+    break;
+  case 'n':
+    vec_push_back(buffer, '\n');
+  lunarity_advance_lexer_state(state);
+    break;
+  case 'r':
+    vec_push_back(buffer, '\r');
+  lunarity_advance_lexer_state(state);
+    break;
+  case 't':
+    vec_push_back(buffer, '\t');
+  lunarity_advance_lexer_state(state);
+    break;
+  case '\'':
+    vec_push_back(buffer, '\'');
+  lunarity_advance_lexer_state(state);
+    break;
+  case '"':
+    vec_push_back(buffer, '"');
+  lunarity_advance_lexer_state(state);
+    break;
+  default:
+    *error_token =
+        lunarity_new_token(LUNARITY_TOKEN_KIND_INVALID_ESCAPE_SEQUENCE_ERROR,
+                           lunarity_new_single_byte_span(state->cursor));
+    return false;
+  }
+
+  return true;
 }
 
 /**
@@ -210,17 +291,17 @@ lunarity_token_t
 lunarity_lexer_state_next_token(lunarity_lexer_state_t *state) {
   lunarity_lexer_state_skip_whitespaces(state);
 
-  // Identifier or keyword
+  // Identifier or keyword.
   if (arty_is_xid_start(state->current) || state->current == '_') {
     return lunarity_lexer_state_next_name_token(state);
   }
 
-  // String literal
+  // String literal.
   if (state->current == '\'' || state->current == '"') {
     return lunarity_lexer_state_next_string_token(state);
   }
 
-  // Punctuation
+  // Punctuation.
   SINGLE_BYTE_PUNCTUATION('+', PLUS);
   SINGLE_BYTE_PUNCTUATION('-', MINUS);
   SINGLE_BYTE_PUNCTUATION('*', ASTERISK);
@@ -252,7 +333,7 @@ lunarity_lexer_state_next_token(lunarity_lexer_state_t *state) {
   DOUBLE_BYTE_PUNCTUATION(':', ':', DOUBLE_COLON);
   SINGLE_BYTE_PUNCTUATION(':', COLON);
 
-  // Punctuation: `.`, `..` or `...`
+  // Punctuation: `.`, `..` or `...`.
   if (state->current == '.') {
     if (state->next == '.') {
       lunarity_byte_location_t start_location = state->cursor;
@@ -276,16 +357,16 @@ lunarity_lexer_state_next_token(lunarity_lexer_state_t *state) {
                               lunarity_new_single_byte_span(start_location));
   }
 
-  // End of file
+  // End of file.
   if (state->current == NO_CODEPOINT) {
     return lunarity_new_token(LUNARITY_TOKEN_KIND_EOF,
                               lunarity_new_single_byte_span(state->cursor));
   }
 
-  // Unexpected character
+  // Unexpected character.
   lunarity_byte_location_t start_location = state->cursor;
   lunarity_advance_lexer_state(state);
-  return lunarity_new_token(LUNARITY_TOKEN_KIND_UNEXPECTED_CHARACTER,
+  return lunarity_new_token(LUNARITY_TOKEN_KIND_UNEXPECTED_CHARACTER_ERROR,
                             lunarity_new_span(start_location, state->cursor));
 }
 
