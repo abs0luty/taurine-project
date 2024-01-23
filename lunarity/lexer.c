@@ -12,33 +12,33 @@ static void lunarity_advance_lexer_state(lunarity_lexer_state_t *state);
  * @brief   Advances the lexer state by two Unicode codepoints.
  * @version 0.1.0
  */
-static void lunarity_advance_lexer_state_twice(lunarity_lexer_state_t *state);
+static inline void lunarity_advance_lexer_state_twice(lunarity_lexer_state_t *state);
 
 /**
  * @brief   Skips all next whitespace characters in the lexer state.
  * @version 0.1.0
  */
-static void
+static inline void
 lunarity_lexer_state_skip_whitespaces(lunarity_lexer_state_t *state);
 
 /**
  * @return `true` if the given Unicode codepoint is a whitespace character.
  * @version 0.1.0
  */
-static bool lunarity_is_whitespace(arty_codepoint_t codepoint);
+static inline bool lunarity_is_whitespace(arty_codepoint_t codepoint);
 
 /**
  * @returns The ASCII lowercase version of the given codepoint.
  * @version 0.1.0
  */
-static arty_codepoint_t lunarity_to_ascii_lowercase(arty_codepoint_t codepoint);
+static inline arty_codepoint_t lunarity_to_ascii_lowercase(arty_codepoint_t codepoint);
 
 /**
  * @brief   Advances the lexer state, consuming XID_Continue characters.
  * @returns The next identifier or keyword token in the lexer state.
  * @version 0.1.0
  */
-static lunarity_token_t
+static inline lunarity_token_t
 lunarity_lexer_state_next_name_token(lunarity_lexer_state_t *state);
 
 /**
@@ -46,7 +46,7 @@ lunarity_lexer_state_next_name_token(lunarity_lexer_state_t *state);
  * @returns The next number token in the lexer state.
  * @version 0.1.0
  */
-static lunarity_token_t
+static inline lunarity_token_t
 lunarity_next_number_token(lunarity_lexer_state_t *state);
 
 /**
@@ -54,7 +54,7 @@ lunarity_next_number_token(lunarity_lexer_state_t *state);
  * @returns The next string token in the lexer state.
  * @version 0.1.0
  */
-static lunarity_token_t
+static inline lunarity_token_t
 lunarity_lexer_state_next_string_token(lunarity_lexer_state_t *state);
 
 static bool process_escape_sequence(lunarity_lexer_state_t *state,
@@ -94,19 +94,19 @@ static void lunarity_advance_lexer_state(lunarity_lexer_state_t *state) {
   state->next = arty_advance_utf8_string_iterator(&state->it);
 }
 
-static void lunarity_advance_lexer_state_twice(lunarity_lexer_state_t *state) {
+static inline void lunarity_advance_lexer_state_twice(lunarity_lexer_state_t *state) {
   lunarity_advance_lexer_state(state);
   lunarity_advance_lexer_state(state);
 }
 
-static void
+static inline void
 lunarity_lexer_state_skip_whitespaces(lunarity_lexer_state_t *state) {
   while (lunarity_is_whitespace(state->current)) {
     lunarity_advance_lexer_state(state);
   }
 }
 
-static lunarity_token_t
+static inline lunarity_token_t
 lunarity_lexer_state_next_name_token(lunarity_lexer_state_t *state) {
   lunarity_byte_location_t start_location = state->cursor;
   while (arty_is_xid_continue(state->current) || state->current == '_') {
@@ -131,13 +131,13 @@ lunarity_lexer_state_next_name_token(lunarity_lexer_state_t *state) {
 }
 
 // TODO: Implement scanning numbers
-static lunarity_token_t
+static inline lunarity_token_t
 lunarity_next_number_token(lunarity_lexer_state_t *state) {
   lunarity_token_t token;
   return token;
 }
 
-static lunarity_token_t
+static inline lunarity_token_t
 lunarity_lexer_state_next_string_token(lunarity_lexer_state_t *state) {
   lunarity_byte_location_t start_location = state->cursor;
   arty_codepoint_t quote = state->current;
@@ -314,14 +314,14 @@ static size_t lunarity_binary_search_kw(const char *name) {
   return -1;
 }
 
-static bool lunarity_is_whitespace(arty_codepoint_t codepoint) {
+static inline bool lunarity_is_whitespace(arty_codepoint_t codepoint) {
   return codepoint == 0x0009 || codepoint == 0x000a || codepoint == 0x000b ||
          codepoint == 0x000c || codepoint == 0x000d || codepoint == 0x0020 ||
          codepoint == 0x0085 || codepoint == 0x200E || codepoint == 0x200F ||
          codepoint == 0x2028 || codepoint == 0x2029;
 }
 
-static arty_codepoint_t
+static inline arty_codepoint_t
 lunarity_to_ascii_lowercase(arty_codepoint_t codepoint) {
   if (codepoint >= 'A' && codepoint <= 'Z') {
     return codepoint - 'A' + 'a';
