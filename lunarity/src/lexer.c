@@ -66,7 +66,8 @@ lunarity_lexer_state_next_string_token(lunarity_lexer_state_t *state);
 /**
  * @brief      Parses escape sequence in string literals.
  * @param      state       The lexer's state.
- * @param[out] buffer      The string buffer responsible for storing string literal.
+ * @param[out] buffer      The string buffer responsible for storing string
+ * literal.
  * @param[out] error_token The error token in case error appeared while scanning
  *                         the escape sequence.
  * @returns    `true` is processing the escape sequence was successful,
@@ -169,7 +170,7 @@ lunarity_lexer_state_next_string_token(lunarity_lexer_state_t *state) {
       break;
     }
 
-    if (state->current == (arty_codepoint_t) '\\') {
+    if (state->current == (arty_codepoint_t)'\\') {
       lunarity_token_t error_token;
       bool ok = lunarity_process_escape_sequence(state, buffer, &error_token);
 
@@ -220,31 +221,31 @@ lunarity_process_escape_sequence(lunarity_lexer_state_t *state,
     return false;
   case 'b':
     vec_push_back(buffer, '\b');
-  lunarity_advance_lexer_state(state);
+    lunarity_advance_lexer_state(state);
     break;
   case 'f':
     vec_push_back(buffer, '\f');
-  lunarity_advance_lexer_state(state);
+    lunarity_advance_lexer_state(state);
     break;
   case 'n':
     vec_push_back(buffer, '\n');
-  lunarity_advance_lexer_state(state);
+    lunarity_advance_lexer_state(state);
     break;
   case 'r':
     vec_push_back(buffer, '\r');
-  lunarity_advance_lexer_state(state);
+    lunarity_advance_lexer_state(state);
     break;
   case 't':
     vec_push_back(buffer, '\t');
-  lunarity_advance_lexer_state(state);
+    lunarity_advance_lexer_state(state);
     break;
   case '\'':
     vec_push_back(buffer, '\'');
-  lunarity_advance_lexer_state(state);
+    lunarity_advance_lexer_state(state);
     break;
   case '"':
     vec_push_back(buffer, '"');
-  lunarity_advance_lexer_state(state);
+    lunarity_advance_lexer_state(state);
     break;
   default:
     *error_token =
