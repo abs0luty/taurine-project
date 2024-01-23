@@ -42,4 +42,4 @@ jobs:
         run: mkdir build; cd build; cmake ..; make
 
       - name: 🧪 Test
-        run: cd build; ctest --output-on-failure
+        run: cd build; ctest --verbose
