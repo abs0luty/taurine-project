@@ -14,7 +14,7 @@ Copyright (c) 2021 Jason Dsouza <@jasmcaus>
 #ifndef TAU_TYPES_H
 #define TAU_TYPES_H
 
-#include "compilers.h"
+#include "tau/compilers.h"
 
 // Simple assertion checks (that don't require a message to STDOUT).
 // Condition failure raises a compilation error (negative index) --> 0*2 == 0 +
