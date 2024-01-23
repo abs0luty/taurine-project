@@ -26,7 +26,13 @@ TEST(vec_tests, int_vec) {
 
   CHECK(!vec_is_empty(test));
   CHECK_EQ(vec_len(test), 3);
+
+#ifdef VEC_LOGARITHMIC_GROWTH
+  CHECK_EQ(vec_capacity(test), 4);
+#else
   CHECK_EQ(vec_capacity(test), 3);
+#endif
+
   CHECK_EQ(*vec_begin(test), 5);
   CHECK_EQ(*(vec_end(test) - 1), 4);
   CHECK_EQ(*(vec_end(test) - 2), 6);

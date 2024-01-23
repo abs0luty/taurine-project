@@ -12,11 +12,21 @@ define_library(
 )
 
 define_library_tests(
-  NAME vec_tests
+  NAME vec_with_linear_growth_tests
   SOURCE vec/tests.c
   DEPENDENCIES
     vec
 )
+
+define_library_tests(
+  NAME vec_with_logarithmic_growth_tests
+  SOURCE vec/tests.c
+  DEPENDENCIES
+    vec
+)
+
+target_compile_definitions(vec_with_linear_growth_tests PRIVATE VEC_LINEAR_GROWTH)
+target_compile_definitions(vec_with_logarithmic_growth_tests PRIVATE VEC_LOGARITHMIC_GROWTH)
 
 define_library(
   NAME argparse

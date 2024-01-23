@@ -217,9 +217,14 @@ typedef struct vec_metadata {
   } while (0)
 
 #ifdef VEC_LOGARITHMIC_GROWTH
-#define vec_compute_next_grow(capacity) ((capacity) ? ((capacity) << 1) : 1)
-#else
-#define vec_compute_next_grow(capacity) ((capacity) + 1)
+  #define vec_compute_next_grow(capacity) ((capacity) ? ((capacity) << 1) : 1)
+#else 
+  #ifdef VEC_LINEAR_GROWTH
+    #define vec_compute_next_grow(capacity) ((capacity) + 1)
+  #else
+    #error "`vec` library requires you to specify vector growth type.\
+You must define either `VEC_LINEAR_GROWTH` or `VEC_LOGARITHMIC_GROWTH` macro."
+  #endif
 #endif
 
 #define vec_push_back(vec, value)                                              \
